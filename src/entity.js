@@ -51,7 +51,11 @@ Entity.prototype.getComponentNames = function() {
 function Behavior(in_components) {
     this.in_components = in_components.split(' ');
     this.on_entitytick = [];
+    this.entities = [];
 }
+Behavior.prototype.addEntity= function(entity) {
+    this.entities.push(entity);
+};
 Behavior.prototype.onEntityTick = function(f) {
     this.on_entitytick.push(f);
 };
@@ -77,11 +81,18 @@ Scene.prototype.add = function() {
         c = arguments[i];
         if (c instanceof Entity) {
             this.entities.push(c);
+            this._addEntityToBehaviors(c);
         } else if (c instanceof Behavior) {
             this.behaviors.push(c);
         } else {
             throw "Cannot add unknown type to scene";
         }
+    }
+};
+Scene.prototype._addEntityToBehaviors = function(entity) {
+    var bi;
+    for (bi=0; bi < this.behaviors.length; bi++) {
+        this.behaviors[bi].addEntity(entity);
     }
 };
 
@@ -104,11 +115,12 @@ Scene.prototype.run = function() {
 };
 
 Scene.prototype.tick = function(t) {
-    for (var ei=0; ei < this.entities.length; ei++) {
-        for (var bi=0; bi < this.behaviors.length; bi++) {
-            var data = this.behaviors[bi].tickentity(t, this.entities[ei]);
+    for (var bi=0; bi < this.behaviors.length; bi++) {
+        var behavior = this.behaviors[bi];
+        for (var ei=0; ei < behavior.entities.length; ei++) {
+            var data = behavior.tickentity(t, behavior.entities[ei]);
             if (data !== null)
-                this.entities[ei].update(data);
+                behavior.entities[ei].update(data);
         }
     }
 };
