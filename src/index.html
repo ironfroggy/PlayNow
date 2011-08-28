@@ -15,8 +15,14 @@
                 ,   size = 10
                 ;
 
+                ctx.save();
+
+                ctx.translate(position[0], position[1]);
+
                 ctx.fillStyle = ['rgb(', parseInt(color[0]*255), ', ', parseInt(color[1]*255), ', ', parseInt(color[2]*255), ')'].join('');
-                ctx.fillRect(position[0] - size/2, position[1] - size/2, size, size);
+                ctx.fillRect(-size/2, -size/2, size, size);
+
+                ctx.restore();
             });
             renderer.bind('beforetick', function() {
                 ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
