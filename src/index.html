@@ -8,20 +8,18 @@
         <script type="text/javascript">
             var ctx = document.getElementById('c').getContext('2d');
 
-            var dot = new Entity({
-                'position': new V(20, 20)
-            ,   'velocity': new V(50, 0)
-            ,   'weight': 0.0
-            });
-
             var renderer = new Behavior('position');
             renderer.bind('entitytick', function(e, t, entity) {
-                var position = entity.get('position');
-                ctx.fillStyle = "red";
-                ctx.fillRect(position[0] - 2, position[1] -2, 4, 4);
+                var position = entity.get('position')
+                ,   color = entity.get('color')
+                ,   size = 10
+                ;
+
+                ctx.fillStyle = ['rgb(', parseInt(color[0]*255), ', ', parseInt(color[1]*255), ', ', parseInt(color[2]*255), ')'].join('');
+                ctx.fillRect(position[0] - size/2, position[1] - size/2, size, size);
             });
             renderer.bind('beforetick', function() {
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.01)';
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
                 ctx.fillRect(0, 0, 640, 480);
             });
 
@@ -35,35 +33,59 @@
             var momentum = new Behavior('position velocity');
             momentum.bind('entitytick', function(e, t, entity, update) {
                 var v = entity.get('velocity');
+                v[0] = Math.abs(v[0]) < 0.1 ? 0 : v[0];
+                v[1] = Math.abs(v[1]) < 0.1 ? 0 : v[1];
                 update({
                     'position': entity.get('position').add(v.multiply(t))
                 });
             });
 
             var friction = new Behavior('velocity');
-            friction.bind('entitytick', function(e, t, entity) {
+            friction.bind('entitytick', function(e, t, entity, update) {
                 var velocity = entity.get('velocity');
-                velocity[0] *= 0.9;
-                velocity[1] *= 0.9;
-                return {
-                    'velocity': velocity
-                }
+                console.log(velocity);
+                update({velocity: velocity.multiply(0.9)});
             })
 
+            var bounds = new Behavior('position velocity');
+            bounds.bind('entitytick', function(e, t, entity, update) {
+                var p = entity.get('position')
+                ,   v = entity.get('velocity')
+                ,   dx = 0
+                ,   dy = 0
+                ;
+
+                if (p[1] > 480 || p[1] < 0) {
+                    dy = p[1] > 480 ? p[1] - 480 : 0 - p[1];
+                    v = new V(v[0]*0.95, -v[1]*0.5);
+                }
+                if (p[0] > 640 || p[0] < 0) {
+                    dx = p[0] > 640 ? p[0] - 640 : 0 - p[0];
+                    v = new V(-v[0]*0.5, v[1]*0.95);
+                }
+
+                p = new V(p[0] - dx, p[1] - dy);
+                update({
+                    velocity: v
+                ,   position: p
+                });
+            });
+
             var scene = new Scene();
-            scene.add(momentum, gravity, renderer);
-            scene.add(dot);
+            scene.add(momentum, gravity, renderer, bounds);
 
             scene.run();
 
-            setInterval(function() {
+            var R = 50;
+            for (var i=0; i<100; i++) {
                 var dot = new Entity({
-                    'position': new V(Math.random()*20, 100 + Math.random()*20)
-                ,   'velocity': new V(Math.random()*500, Math.random()*-250)
+                    'position': new V(50, 100)
+                ,   'velocity': new V(Math.random()*R*2 - R + 100, Math.random()*R*2-R)
                 ,   'weight': 0.0
+                ,   'color': [Math.random(), Math.random(), Math.random()]
                 });
                 scene.add(dot);
-            }, 1000);
+            }
         </script>
     </body>
 </html>
