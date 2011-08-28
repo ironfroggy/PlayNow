@@ -102,6 +102,7 @@ function Scene() {
     this.entities = [];
     this.behaviors = [];
 };
+Scene.prototype = new EventHandling();
 Scene.prototype.add = function() {
     var c;
     for (var i=0; i < arguments.length; i++) {
@@ -133,7 +134,7 @@ Scene.prototype.run = function() {
     function step() {
         nts = (new Date);
         t = (nts.getTime() - lts.getTime()) / 1000;
-        self.tick(t);
+        self.trigger('tick', t);
         lts = nts;
 
         setTimeout(step, 1000/60);
@@ -141,7 +142,7 @@ Scene.prototype.run = function() {
     step();
 };
 
-Scene.prototype.tick = function(t) {
+Scene.prototype.ontick = function(e, t) {
     for (var bi=0; bi < this.behaviors.length; bi++) {
         var behavior = this.behaviors[bi];
         behavior.trigger('beforetick');
