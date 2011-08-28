@@ -136,7 +136,7 @@ Scene.prototype.run = function() {
         self.tick(t);
         lts = nts;
 
-        setTimeout(step, 1000/30);
+        setTimeout(step, 1000/60);
     }
     step();
 };

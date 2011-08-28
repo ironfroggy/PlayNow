@@ -10,26 +10,26 @@
 
             var dot = new Entity({
                 'position': new V(20, 20)
-            ,   'velocity': new V(20, 20)
-            ,   'weight': 0
+            ,   'velocity': new V(50, 0)
+            ,   'weight': 0.0
             });
 
             var renderer = new Behavior('position');
             renderer.bind('entitytick', function(e, t, entity) {
                 var position = entity.get('position');
                 ctx.fillStyle = "red";
-                ctx.fillRect(position[0] - 5, position[1] -5, 10, 10);
+                ctx.fillRect(position[0] - 2, position[1] -2, 4, 4);
             });
             renderer.bind('beforetick', function() {
-                ctx.fillStyle = 'white';
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.01)';
                 ctx.fillRect(0, 0, 640, 480);
             });
 
             var gravity = new Behavior('weight velocity');
-            gravity.bind('enititytick', function(e, t, entity) {
-                return {
-                    'velocity': entity.get('velocity').add(new V(0, -9.8 * entity.get('weight')))
-                }
+            gravity.bind('entitytick', function(e, t, entity, update) {
+                update({
+                    'velocity': entity.get('velocity').add(new V(0, 9.8))
+                });
             });
 
             var momentum = new Behavior('position velocity');
@@ -51,10 +51,19 @@
             })
 
             var scene = new Scene();
-            scene.add(momentum, renderer);
+            scene.add(momentum, gravity, renderer);
             scene.add(dot);
 
             scene.run();
+
+            setInterval(function() {
+                var dot = new Entity({
+                    'position': new V(Math.random()*20, 100 + Math.random()*20)
+                ,   'velocity': new V(Math.random()*500, Math.random()*-250)
+                ,   'weight': 0.0
+                });
+                scene.add(dot);
+            }, 1000);
         </script>
     </body>
 </html>
