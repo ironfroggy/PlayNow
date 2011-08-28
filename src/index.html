@@ -11,11 +11,11 @@
             var dot = new Entity({
                 'position': new V(20, 20)
             ,   'velocity': new V(20, 20)
-            ,   'weight': 1.0
+            ,   'weight': 0
             });
 
             var renderer = new Behavior('position');
-            renderer.onEntityTick(function(t, entity) {
+            renderer.bind('entitytick', function(e, t, entity) {
                 var position = entity.get('position');
                 ctx.fillStyle = "red";
                 ctx.fillRect(position[0] - 5, position[1] -5, 10, 10);
@@ -26,22 +26,22 @@
             });
 
             var gravity = new Behavior('weight velocity');
-            gravity.onEntityTick(function(t, entity) {
+            gravity.bind('enititytick', function(e, t, entity) {
                 return {
                     'velocity': entity.get('velocity').add(new V(0, -9.8 * entity.get('weight')))
                 }
             });
 
             var momentum = new Behavior('position velocity');
-            momentum.onEntityTick(function(t, entity) {
+            momentum.bind('entitytick', function(e, t, entity, update) {
                 var v = entity.get('velocity');
-                return {
+                update({
                     'position': entity.get('position').add(v.multiply(t))
-                }
+                });
             });
 
             var friction = new Behavior('velocity');
-            friction.onEntityTick(function(t, entity) {
+            friction.bind('entitytick', function(e, t, entity) {
                 var velocity = entity.get('velocity');
                 velocity[0] *= 0.9;
                 velocity[1] *= 0.9;

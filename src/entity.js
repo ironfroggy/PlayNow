@@ -37,11 +37,17 @@ EventHandling.prototype.bind = function(eventname, callback) {
     }
     this.__event_handlers[eventname].push(callback);
 }
-EventHandling.prototype.trigger = function (eventname, data) {
+EventHandling.prototype.trigger = function (eventname) {
+    var args = Array.prototype.slice.call(arguments, 1, arguments.length);
+    args.unshift(eventname);
     if (typeof this.__event_handlers !== 'undefined' && typeof this.__event_handlers[eventname] !== 'undefined') {
         for (var i=0,l=this.__event_handlers[eventname].length; i<l; i++) {
-            this.__event_handlers[eventname][i].call(this, eventname, data);
+            this.__event_handlers[eventname][i].apply(this, args);
         }
+    }
+    var default_handler = this['on'+eventname];
+    if (typeof default_handler === 'function') {
+        default_handler.apply(this, args);
     }
 }
 
@@ -49,6 +55,7 @@ EventHandling.prototype.trigger = function (eventname, data) {
 function Entity(data) {
     this._components = data || {};
 }
+Entity.prototype = new EventHandling();
 Entity.prototype.set = function(name, data) {
     this._components[name] = data;
 };
@@ -70,17 +77,13 @@ Entity.prototype.getComponentNames = function() {
 
 function Behavior(in_components) {
     this.in_components = in_components.split(' ');
-    this.on_entitytick = [];
     this.entities = [];
 }
 Behavior.prototype = new EventHandling();
 Behavior.prototype.addEntity= function(entity) {
     this.entities.push(entity);
 };
-Behavior.prototype.onEntityTick = function(f) {
-    this.on_entitytick.push(f);
-};
-Behavior.prototype.tickentity = function(t, entity) {
+Behavior.prototype.ontickentity = function(e, t, entity) {
     var component_names = entity.getComponentNames();
     for (var i=0; i < this.in_components.length; i++) {
         var cname = this.in_components[i];
@@ -89,7 +92,10 @@ Behavior.prototype.tickentity = function(t, entity) {
         }
     }
 
-    return this.on_entitytick[0](t, entity);
+    var data = this.trigger('entitytick', t, entity, update);
+    function update(data) {
+        entity.update(data);
+    }
 }
 
 function Scene() {
@@ -140,9 +146,7 @@ Scene.prototype.tick = function(t) {
         var behavior = this.behaviors[bi];
         behavior.trigger('beforetick');
         for (var ei=0; ei < behavior.entities.length; ei++) {
-            var data = behavior.tickentity(t, behavior.entities[ei]);
-            if (data !== null)
-                behavior.entities[ei].update(data);
+            behavior.trigger('tickentity', t, behavior.entities[ei]);
         }
         behavior.trigger('aftertick');
     }
