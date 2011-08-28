@@ -10,7 +10,7 @@
 
             var dot = new Entity({
                 'position': new V(20, 20)
-            ,   'velocity': new V(7, 7)
+            ,   'velocity': new V(20, 20)
             ,   'weight': 1.0
             });
 
@@ -19,6 +19,10 @@
                 var position = entity.get('position');
                 ctx.fillStyle = "red";
                 ctx.fillRect(position[0] - 5, position[1] -5, 10, 10);
+            });
+            renderer.bind('beforetick', function() {
+                ctx.fillStyle = 'white';
+                ctx.fillRect(0, 0, 640, 480);
             });
 
             var gravity = new Behavior('weight velocity');

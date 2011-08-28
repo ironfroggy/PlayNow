@@ -26,6 +26,26 @@ V.prototype.multiply = function(n) {
     return new V(this[0] * n, this[1] * n, this[2] * n);
 };
 
+function EventHandling() {
+}
+EventHandling.prototype.bind = function(eventname, callback) {
+    if (typeof this.__event_handlers === 'undefined') {
+        this.__event_handlers = {};
+    }
+    if (typeof this.__event_handlers[eventname] === 'undefined') {
+        this.__event_handlers[eventname] = [];
+    }
+    this.__event_handlers[eventname].push(callback);
+}
+EventHandling.prototype.trigger = function (eventname, data) {
+    if (typeof this.__event_handlers !== 'undefined' && typeof this.__event_handlers[eventname] !== 'undefined') {
+        for (var i=0,l=this.__event_handlers[eventname].length; i<l; i++) {
+            this.__event_handlers[eventname][i].call(this, eventname, data);
+        }
+    }
+}
+
+
 function Entity(data) {
     this._components = data || {};
 }
@@ -53,6 +73,7 @@ function Behavior(in_components) {
     this.on_entitytick = [];
     this.entities = [];
 }
+Behavior.prototype = new EventHandling();
 Behavior.prototype.addEntity= function(entity) {
     this.entities.push(entity);
 };
@@ -117,10 +138,12 @@ Scene.prototype.run = function() {
 Scene.prototype.tick = function(t) {
     for (var bi=0; bi < this.behaviors.length; bi++) {
         var behavior = this.behaviors[bi];
+        behavior.trigger('beforetick');
         for (var ei=0; ei < behavior.entities.length; ei++) {
             var data = behavior.tickentity(t, behavior.entities[ei]);
             if (data !== null)
                 behavior.entities[ei].update(data);
         }
+        behavior.trigger('aftertick');
     }
 };
