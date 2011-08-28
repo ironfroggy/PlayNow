@@ -1,0 +1,55 @@
+<html>
+    <head>
+        <title>DEMO</title>
+    </head>
+    <body>
+        <canvas id=c width=640 height=480 />
+        <script type="text/javascript" src="entity.js"></script>
+        <script type="text/javascript">
+            var ctx = document.getElementById('c').getContext('2d');
+
+            var dot = new Entity({
+                'position': new V(20, 20)
+            ,   'velocity': new V(7, 7)
+            ,   'weight': 1.0
+            });
+
+            var renderer = new Behavior('position');
+            renderer.onEntityTick(function(t, entity) {
+                var position = entity.get('position');
+                ctx.fillStyle = "red";
+                ctx.fillRect(position[0] - 5, position[1] -5, 10, 10);
+            });
+
+            var gravity = new Behavior('weight velocity');
+            gravity.onEntityTick(function(t, entity) {
+                return {
+                    'velocity': entity.get('velocity').add(new V(0, -9.8 * entity.get('weight')))
+                }
+            });
+
+            var momentum = new Behavior('position velocity');
+            momentum.onEntityTick(function(t, entity) {
+                var v = entity.get('velocity');
+                return {
+                    'position': entity.get('position').add(v.multiply(t))
+                }
+            });
+
+            var friction = new Behavior('velocity');
+            friction.onEntityTick(function(t, entity) {
+                var velocity = entity.get('velocity');
+                velocity[0] *= 0.9;
+                velocity[1] *= 0.9;
+                return {
+                    'velocity': velocity
+                }
+            })
+
+            var scene = new Scene();
+            scene.add(dot, momentum, renderer);
+
+            scene.run();
+        </script>
+    </body>
+</html>
