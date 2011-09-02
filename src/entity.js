@@ -59,8 +59,8 @@ Entity.prototype = new EventHandling();
 Entity.prototype.set = function(name, data) {
     this._components[name] = data;
 };
-Entity.prototype.get = function(name, data) {
-    return this._components[name];
+Entity.prototype.get = function(name, data, def) {
+    return typeof this._components[name] === 'undefined' ? def : this._components[name];
 };
 Entity.prototype.update = function(data) {
     for (k in data) {

@@ -32,28 +32,36 @@ momentum.bind('entitytick', function(e, t, entity, update) {
 });
 
 var bounds = new Behavior('position velocity');
-bounds.bind('entitytick', function(e, t, entity, update) {
-    var p = entity.get('position')
-    ,   v = entity.get('velocity')
-    ,   dx = 0
-    ,   dy = 0
+(function(){
+    var ENERGY_LOSS = 0.75
+    ,   FRICTION = 0.95
     ;
 
-    if (p[1] > 480 || p[1] < 0) {
-        dy = p[1] > 480 ? p[1] - 480 : p[1];
-        v = new V(v[0]*0.95, -v[1]*0.5);
-    }
-    if (p[0] > 640 || p[0] < 0) {
-        dx = p[0] > 640 ? p[0] - 640 : p[0];
-        v = new V(-v[0]*0.5, v[1]*0.95);
-    }
+    bounds.bind('entitytick', function(e, t, entity, update) {
+        var p = entity.get('position')
+        ,   v = entity.get('velocity')
+        ,   e = entity.get('bounce', ENERGY_LOSS)
+        ,   f = entity.get('friction', FRICTION)
+        ,   dx = 0
+        ,   dy = 0
+        ;
 
-    p = new V(p[0] - dx, p[1] - dy);
-    update({
-        velocity: v
-    ,   position: p
+        if (p[1] > 480 || p[1] < 0) {
+            dy = p[1] > 480 ? p[1] - 480 : p[1];
+            v = new V(v[0]*FRICTION, -v[1]*ENERGY_LOSS);
+        }
+        if (p[0] > 640 || p[0] < 0) {
+            dx = p[0] > 640 ? p[0] - 640 : p[0];
+            v = new V(-v[0]*ENERGY_LOSS, v[1]*FRICTION);
+        }
+
+        p = new V(p[0] - dx, p[1] - dy);
+        update({
+            velocity: v
+        ,   position: p
+        });
     });
-});
+})();
 
 var gravity = new Behavior('weight velocity');
 gravity.bind('entitytick', function(e, t, entity, update) {
