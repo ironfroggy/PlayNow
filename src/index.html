@@ -7,6 +7,11 @@
         <script type="text/javascript" src="entity.js"></script>
         <script type="text/javascript">
             var ctx = document.getElementById('c').getContext('2d');
+            var view = {
+                x: 0,
+                y: 0,
+                s: 1
+            };
 
             var renderer = new Behavior('position');
             renderer.bind('entitytick', function(e, t, entity) {
@@ -25,8 +30,16 @@
                 ctx.restore();
             });
             renderer.bind('beforetick', function() {
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+                ctx.save();
+
+                ctx.scale(view.s, view.s);
+                ctx.translate(view.x, view.y);
+
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
                 ctx.fillRect(0, 0, 640, 480);
+            });
+            renderer.bind('aftertick', function() {
+                ctx.restore();
             });
 
             var gravity = new Behavior('weight velocity');
@@ -39,8 +52,8 @@
             var momentum = new Behavior('position velocity');
             momentum.bind('entitytick', function(e, t, entity, update) {
                 var v = entity.get('velocity');
-                v[0] = Math.abs(v[0]) < 0.1 ? 0 : v[0];
-                v[1] = Math.abs(v[1]) < 0.1 ? 0 : v[1];
+                v[0] = Math.abs(v[0]) < 1 ? 0 : v[0];
+                v[1] = Math.abs(v[1]) < 1 ? 0 : v[1];
                 update({
                     'position': entity.get('position').add(v.multiply(t))
                 });
