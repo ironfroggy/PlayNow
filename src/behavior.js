@@ -37,18 +37,22 @@ bounds.bind('entitytick', function(e, t, entity, update) {
     ,   v = entity.get('velocity')
     ,   dx = 0
     ,   dy = 0
+    ,   np, nv
     ;
 
     if (p[1] > 480 || p[1] < 0) {
         dy = p[1] > 480 ? p[1] - 480 : 0 - p[1];
-        v = new V(v[0]*0.95, -v[1]*0.5);
+        nv = new V(v[0]*0.95, -v[1]*0.5);
     }
     if (p[0] > 640 || p[0] < 0) {
         dx = p[0] > 640 ? p[0] - 640 : 0 - p[0];
-        v = new V(-v[0]*0.5, v[1]*0.95);
+        nv = new V(-v[0]*0.5, v[1]*0.95);
     }
 
-    p = new V(p[0] - dx, p[1] - dy);
+    np = new V(p[0] - dx, p[1] - dy);
+    if (dx || dy) {
+        console.log(dx, dy, np);
+    }
     update({
         velocity: v
     ,   position: p

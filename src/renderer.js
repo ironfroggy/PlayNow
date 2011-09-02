@@ -29,7 +29,7 @@ var renderer;
         ctx.translate(this.x, this.y);
 
         ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
-        ctx.fillRect(0, 0, 640, 480);
+        ctx.fillRect(-100, -100, 840, 680);
     });
     renderer.bind('aftertick', function() {
         ctx.restore();
