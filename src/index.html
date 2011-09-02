@@ -13,13 +13,13 @@
             var scene = new Scene();
             scene.add(momentum, gravity, renderer, bounds);
 
-            var R = 50
-            ,   D = 1
+            var R = 500
+            ,   D = 500
             ;
             for (var i=0; i<D; i++) {
                 var dot = new Entity({
                     'position': new V(50, 100)
-                ,   'velocity': new V(Math.random()*R*10 + 5000, Math.random()*R*2)
+                ,   'velocity': new V(Math.random()*R-R/2, Math.random()*R-R/2)
                 ,   'weight': 0.0
                 ,   'color': [Math.random(), Math.random(), Math.random()]
                 });
