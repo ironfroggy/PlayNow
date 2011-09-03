@@ -101,6 +101,7 @@ Behavior.prototype.ontickentity = function(e, t, entity) {
 function Scene() {
     this.entities = [];
     this.behaviors = [];
+    this.running = false;
 };
 Scene.prototype = new EventHandling();
 Scene.prototype.add = function() {
@@ -132,14 +133,21 @@ Scene.prototype.run = function() {
     ;
 
     function step() {
-        nts = (new Date);
-        t = (nts.getTime() - lts.getTime()) / 1000;
-        self.trigger('tick', t);
-        lts = nts;
+        if (self.running) {
+            nts = (new Date);
+            t = (nts.getTime() - lts.getTime()) / 1000;
+            self.trigger('tick', t);
+            lts = nts;
 
-        setTimeout(step, 1000/60);
+            setTimeout(step, 1000/60);
+        }
     }
+
+    this.running = true;
     step();
+};
+Scene.prototype.stop = function() {
+    this.running = false;
 };
 
 Scene.prototype.ontick = function(e, t) {
