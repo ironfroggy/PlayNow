@@ -152,6 +152,16 @@ Scene.prototype.stop = function() {
     this.trigger('stop');
 };
 
+Scene.prototype.onstart = function(e) {
+    for (var bi=0; bi < this.behaviors.length; bi++) {
+        this.behaviors[bi].trigger('start');
+    }
+};
+Scene.prototype.onstop = function(e) {
+    for (var bi=0; bi < this.behaviors.length; bi++) {
+        this.behaviors[bi].trigger('stop');
+    }
+};
 Scene.prototype.ontick = function(e, t) {
     for (var bi=0; bi < this.behaviors.length; bi++) {
         var behavior = this.behaviors[bi];

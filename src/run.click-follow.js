@@ -2,6 +2,15 @@ function SeekPoint(target) {
     this.target = target;
 }
 SeekPoint.prototype = new Behavior('position velocity');
+SeekPoint.prototype.onstart = function() {
+    var self = this;
+    document.body.onclick = function(e) {
+        self.target = new V(e.x, e.y);
+    }
+};
+SeekPoint.prototype.onstop = function(e) {
+    document.body.onclick = null;
+};
 SeekPoint.prototype.ontickentity = function(e, t, entity) {
     var target = this.target;
     var position = entity.get('position');
@@ -21,10 +30,6 @@ function SeekDemo(R, D) {
     ,   'color': [Math.random(), Math.random(), Math.random()]
     });
     this.add(dot);
-
-    document.body.onclick = function(e) {
-        seekpoint.target = new V(e.x, e.y);
-    }
 }
 SeekDemo.prototype = new Scene();
 scene = new SeekDemo(500, 500);
