@@ -5,7 +5,7 @@ SeekPoint.prototype = new Behavior('position velocity');
 SeekPoint.prototype.onstart = function() {
     var self = this;
     document.body.onclick = function(e) {
-        self.target = new V(e.x, e.y);
+        self.target = new V(e.clientX, e.clientY);
     }
 };
 SeekPoint.prototype.onstop = function(e) {

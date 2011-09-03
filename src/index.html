@@ -7,12 +7,14 @@
 
         <script type="text/javascript" src="yepnope.1.0.2-min.js"></script>
         <script type="text/javascript">
-            var ctx = document.getElementById('c').getContext('2d');
+            var ctx = document.getElementById('c').getContext('2d')
+            ,   scene
+            ;
 
             yepnope({
                 test: true,
                 yep: [
-                    "entity.js", "behavior.js", "renderer.js",
+                    "entity.js", "behavior.js", "scene.js", "renderer.js",
                     "run." + location.hash.slice(1, location.hash.length) + ".js",
                 ],
                 complete: function() {
