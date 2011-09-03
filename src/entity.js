@@ -56,15 +56,17 @@ function Entity(data) {
     this._components = data || {};
 }
 Entity.prototype = new EventHandling();
-Entity.prototype.set = function(name, data) {
-    this._components[name] = data;
-};
 Entity.prototype.get = function(name, data, def) {
     return typeof this._components[name] === 'undefined' ? def : this._components[name];
 };
+Entity.prototype.set = function(name, data) {
+    if (this.trigger('set', name, data) !== false) {
+        this._components[name] = data;
+    }
+};
 Entity.prototype.update = function(data) {
     for (k in data) {
-        this._components[k] = data[k];
+        this.set(k, data[k]);
     }
 };
 Entity.prototype.getComponentNames = function() {
