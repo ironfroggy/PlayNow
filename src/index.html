@@ -4,36 +4,22 @@
     </head>
     <body>
         <canvas id=c width=640 height=480 />
+
+        <script type="text/javascript" src="yepnope.1.0.2-min.js"></script>
+
         <script type="text/javascript" src="entity.js"></script>
         <script type="text/javascript" src="behavior.js"></script>
         <script type="text/javascript" src="renderer.js"></script>
         <script type="text/javascript">
             var ctx = document.getElementById('c').getContext('2d');
 
-            
-            function BouncingBallScene(R, D) {
-                var dot;
-
-                this.add(momentum, gravity, renderer, bounds);
-                for (var i=0; i<D; i++) {
-                    dot = new Entity({
-                        'position': new V(50, 100)
-                    ,   'velocity': new V(Math.random()*R-R/2, Math.random()*R-R/2)
-                    ,   'weight': 0.0
-                    ,   'bounce': Math.random()*0.5 + 0.25
-                    ,   'color': [Math.random(), Math.random(), Math.random()]
-                    });
-                    this.add(dot);
+            yepnope({
+                test: true,
+                yep: "run." + location.hash.slice(1, location.hash.length) + ".js",
+                complete: function() {
+                    scene.run();
                 }
-
-                renderer.zoom = 0.75;
-                renderer.x = 100;
-                renderer.y = 50;
-            }
-            BouncingBallScene.prototype = new Scene();
-
-            var scene = new BouncingBallScene(500, 500);
-            scene.run();
+            })
         </script>
     </body>
 </html>
