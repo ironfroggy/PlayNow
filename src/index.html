@@ -6,16 +6,15 @@
         <canvas id=c width=640 height=480 />
 
         <script type="text/javascript" src="yepnope.1.0.2-min.js"></script>
-
-        <script type="text/javascript" src="entity.js"></script>
-        <script type="text/javascript" src="behavior.js"></script>
-        <script type="text/javascript" src="renderer.js"></script>
         <script type="text/javascript">
             var ctx = document.getElementById('c').getContext('2d');
 
             yepnope({
                 test: true,
-                yep: "run." + location.hash.slice(1, location.hash.length) + ".js",
+                yep: [
+                    "entity.js", "behavior.js", "renderer.js",
+                    "run." + location.hash.slice(1, location.hash.length) + ".js",
+                ],
                 complete: function() {
                     scene.run();
                 }
