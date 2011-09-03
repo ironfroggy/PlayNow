@@ -10,26 +10,29 @@
         <script type="text/javascript">
             var ctx = document.getElementById('c').getContext('2d');
 
-            var scene = new Scene();
-            scene.add(momentum, gravity, renderer, bounds);
+            
+            function BouncingBallScene(R, D) {
+                var dot;
 
-            var R = 500
-            ,   D = 500
-            ;
-            for (var i=0; i<D; i++) {
-                var dot = new Entity({
-                    'position': new V(50, 100)
-                ,   'velocity': new V(Math.random()*R-R/2, Math.random()*R-R/2)
-                ,   'weight': 0.0
-                ,   'bounce': Math.random()*0.5 + 0.25
-                ,   'color': [Math.random(), Math.random(), Math.random()]
-                });
-                scene.add(dot);
+                this.add(momentum, gravity, renderer, bounds);
+                for (var i=0; i<D; i++) {
+                    dot = new Entity({
+                        'position': new V(50, 100)
+                    ,   'velocity': new V(Math.random()*R-R/2, Math.random()*R-R/2)
+                    ,   'weight': 0.0
+                    ,   'bounce': Math.random()*0.5 + 0.25
+                    ,   'color': [Math.random(), Math.random(), Math.random()]
+                    });
+                    this.add(dot);
+                }
+
+                renderer.zoom = 0.75;
+                renderer.x = 100;
+                renderer.y = 50;
             }
+            BouncingBallScene.prototype = new Scene();
 
-            renderer.zoom = 0.75;
-            renderer.x = 100;
-            renderer.y = 50;
+            var scene = new BouncingBallScene(500, 500);
             scene.run();
         </script>
     </body>
