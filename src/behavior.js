@@ -2,7 +2,7 @@ function Behavior(in_components) {
     this.in_components = in_components.split(' ');
     this.entities = [];
 }
-Behavior.prototype = new EventHandling();
+Behavior.prototype = new Entity();
 Behavior.prototype.addEntity= function(entity) {
     this.entities.push(entity);
 };

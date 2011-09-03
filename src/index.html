@@ -7,17 +7,17 @@
 
         <script type="text/javascript" src="yepnope.1.0.2-min.js"></script>
         <script type="text/javascript">
-            var ctx = document.getElementById('c').getContext('2d')
-            ,   scene
-            ;
+            var viewport, scene;
 
             yepnope({
                 test: true,
                 yep: [
-                    "entity.js", "behavior.js", "scene.js", "renderer.js",
+                    "entity.js", "viewport.js", "behavior.js", "scene.js", "renderer.js",
                     "run." + location.hash.slice(1, location.hash.length) + ".js",
                 ],
                 complete: function() {
+                    viewport = new ViewPort('c');
+                    viewport.set('scene', scene);
                     scene.run();
                 }
             })

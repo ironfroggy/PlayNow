@@ -27,7 +27,7 @@ SeekPoint.prototype.ontickentity = function(e, t, entity) {
 
 function SeekDemo(R, D) {
     var seekpoint = new SeekPoint();
-    this.add(seekpoint, momentum, renderer);
+    this.add(seekpoint, momentum);
 
     for (var i=0; i<100; i++) {
         dot = new Entity({
