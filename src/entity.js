@@ -79,7 +79,7 @@ function Behavior(in_components) {
     this.in_components = in_components.split(' ');
     this.entities = [];
 }
-Behavior.prototype = new EventHandling();
+Behavior.prototype = new Entity();
 Behavior.prototype.addEntity= function(entity) {
     this.entities.push(entity);
 };
@@ -103,7 +103,7 @@ function Scene() {
     this.behaviors = [];
     this.running = false;
 };
-Scene.prototype = new EventHandling();
+Scene.prototype = new Entity();
 Scene.prototype.add = function() {
     var c;
     for (var i=0; i < arguments.length; i++) {
