@@ -144,10 +144,12 @@ Scene.prototype.run = function() {
     }
 
     this.running = true;
+    this.trigger('start');
     step();
 };
 Scene.prototype.stop = function() {
     this.running = false;
+    this.trigger('stop');
 };
 
 Scene.prototype.ontick = function(e, t) {
