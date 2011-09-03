@@ -11,7 +11,7 @@ V.prototype.add = function(b) {
     return new V(this[0] + b[0], this[1] + b[1]);
 };
 V.prototype.getLength = function() {
-    var length_sqr = this[0]*this[0] + this[1]*this[1] + this[2]*this[2]
+    var length_sqr = this[0]*this[0] + this[1]*this[1] // + this[2]*this[2]
     ,   length = Math.sqrt(length_sqr)
     ;
 
@@ -160,5 +160,10 @@ Scene.prototype.ontick = function(e, t) {
             behavior.trigger('tickentity', t, behavior.entities[ei]);
         }
         behavior.trigger('aftertick');
+    }
+
+    for (var ei=0; ei < this.entities.length; ei++) {
+        var entity = this.entities[ei];
+        entity.trigger('tick', t);
     }
 };
