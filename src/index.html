@@ -12,7 +12,12 @@
             yepnope({
                 test: true,
                 yep: [
-                    "entity.js", "viewport.js", "behavior.js", "scene.js", "renderer.js",
+                    "event.js",
+                    "entity.js",
+                    "viewport.js",
+                    "behavior.js",
+                    "scene.js",
+                    "renderer.js",
                     "run." + location.hash.slice(1, location.hash.length) + ".js",
                 ],
                 complete: function() {
