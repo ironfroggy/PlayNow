@@ -73,6 +73,13 @@ Entity.prototype.update = function(data) {
         this.set(k, data[k]);
     }
 };
+Entity.prototype.defaults = function(data) {
+    for (k in data) {
+        if (typeof this._components[k] === 'undefined') {
+            this.set(k, data[k]);
+        }
+    }
+};
 Entity.prototype.getComponentNames = function() {
     var l = [];
     for (n in this._components) {

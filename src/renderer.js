@@ -19,11 +19,16 @@ Rendered.prototype.onentitytick = function(e, t, entity) {
     ctx.restore();
 };
 Rendered.prototype.onbeforetick = function() {
-    var ctx = this.get('viewport').get('ctx');
+    var viewport = this.get('viewport')
+    ,   ctx = viewport.get('ctx')
+    ,   zoom = viewport.get('zoom')
+    ,   offset_x = viewport.get('x')
+    ,   offset_y = viewport.get('y')
+    ;
     ctx.save();
 
-    ctx.scale(this.zoom, this.zoom);
-    ctx.translate(this.x, this.y);
+    ctx.scale(zoom, zoom);
+    ctx.translate(offset_x, offset_y);
 
     ctx.fillStyle = colorStyle(this.get('backgroundcolor', [1, 1, 1, 0.3]));
     ctx.fillRect(-100, -100, 840, 680);
