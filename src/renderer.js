@@ -25,13 +25,16 @@ Rendered.prototype.onbeforetick = function() {
     ,   offset_x = viewport.get('x')
     ,   offset_y = viewport.get('y')
     ;
-    ctx.save();
 
-    ctx.scale(zoom, zoom);
-    ctx.translate(offset_x, offset_y);
+    if (viewport.get('clearEachFrame')) {
+        ctx.save();
 
-    ctx.fillStyle = colorStyle(this.get('backgroundcolor', [1, 1, 1, 0.3]));
-    ctx.fillRect(-100, -100, 840, 680);
+        ctx.scale(zoom, zoom);
+        ctx.translate(offset_x, offset_y);
+
+        ctx.fillStyle = colorStyle(this.get('backgroundcolor', [1, 1, 1, 0.3]));
+        ctx.fillRect(-100, -100, 840, 680);
+    }
 };
 Rendered.prototype.onaftertick = function() {
     var ctx = this.get('viewport').get('ctx');
