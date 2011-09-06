@@ -62,13 +62,12 @@ Entity.prototype.getComponentNames = function() {
     }
     return l;
 };
-Entity.prototype.propagate = function(eventname, component) {
-    var self = this;
-
+Entity.prototype.propagate = function(eventname, component, before) {
     this.bind(eventname, function() {
-        var c = self.get(component);
+        var c = this.get(component);
         console.log("propagating '" + eventname +"' event to ", c);
-        c.trigger.apply(c, arguments);
+        before = (before||function(){return arguments});
+        c.trigger.apply(c, before.apply(this, arguments));
     });
 };
 

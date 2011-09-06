@@ -9,7 +9,18 @@ function ViewPort(canvas_id) {
         zoom: 1
     });
 
-    this.propagate('mouse', 'scene');
+    this.propagate('mouse', 'scene', function(eventname, coord) {
+        var canvas = this.get('canvas');
+        coord[0] -= canvas.offsetLeft;
+        coord[1] -= canvas.offsetTop;
+        return arguments;
+    });
+
+    var viewport = this;
+    this.get('canvas').onclick = function(e) {
+        console.log(e.clientX, e.clientY);
+        viewport.trigger('mouse.click', new V(e.clientX, e.clientY));
+    }
 }
 ViewPort.prototype = new Entity();
 ViewPort.prototype.onsetscene = function(e, scene) {
