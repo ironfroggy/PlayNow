@@ -16,10 +16,23 @@ function ViewPort(canvas_id) {
         return arguments;
     });
 
-    var viewport = this;
-    this.get('canvas').onclick = function(e) {
-        console.log(e.clientX, e.clientY);
-        viewport.trigger('mouse.click', new V(e.clientX, e.clientY));
+    var viewport = this
+    ,   canvas = this.get('canvas')
+    ,   mevents = {
+            mousemove: 'mouse.move'
+        ,   mousedown: 'mouse.down'
+        ,   mouseup:   'mouse.up'
+        ,   click:     'mouse.click'
+        ,   mousewheel:'mouse.wheel'
+        }
+    ;
+
+    for (var mevent in mevents) {
+        (function(mevent){
+            this.get('canvas')['on' + mevent] = function(e) {
+                viewport.trigger(mevents[mevent], new V(e.clientX, e.clientY));
+            }
+        }).call(this, mevent);
     }
 }
 ViewPort.prototype = new Entity();

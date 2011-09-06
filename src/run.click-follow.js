@@ -34,6 +34,9 @@ function SeekDemo(R, D) {
 SeekDemo.prototype = new Scene();
 SeekDemo.prototype['onmouse.click'] = function(e, coord) {
     this.seekpoint.target = coord;
-}
+};
+SeekDemo.prototype['onmouse'] = function(e, coord) {
+    console.log(e, coord);
+};
 
 scene = new SeekDemo(500, 500);
