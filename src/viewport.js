@@ -27,10 +27,27 @@ function ViewPort(canvas_id) {
         }
     ;
 
+    var fromcoord, isdown;
     for (var mevent in mevents) {
         (function(mevent){
-            this.get('canvas')['on' + mevent] = function(e) {
-                viewport.trigger(mevents[mevent], new V(e.clientX, e.clientY));
+            if (mevent === 'mousemove') {
+                this.get('canvas')['on' + mevent] = function(e) {
+                    if (isdown) {
+                        viewport.trigger('mouse.drag', new V(e.clientX, e.clientY), fromcoord);
+                    } else {
+                        viewport.trigger(mevents[mevent], new V(e.clientX, e.clientY), fromcoord);
+                    }
+                    fromcoord = new V(e.clientX, e.clientY);
+                }
+            } else {
+                this.get('canvas')['on' + mevent] = function(e) {
+                    if (mevent === 'mousedown') {
+                        isdown = true;
+                    } else if (mevent === 'mouseup') {
+                        isdown = false;
+                    }
+                    viewport.trigger(mevents[mevent], new V(e.clientX, e.clientY));
+                }
             }
         }).call(this, mevent);
     }
