@@ -17,8 +17,6 @@ EventHandling.prototype.trigger = function (eventname) {
     args.unshift(eventname);
 
     for (var i=1, l=event_name_parts.length; i<=l; i++) {
-        if (eventname.indexOf('foo') >= 0)
-            console.log(i, event_name_parts.slice(0, i).join('.'));
         trigger_specific.call(this, event_name_parts.slice(0, i).join('.'));
     }
 

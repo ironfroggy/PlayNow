@@ -28,6 +28,7 @@ V.prototype.multiply = function(n) {
 
 function Entity(data) {
     this._components = data || {};
+    this._propagation = {};
 }
 Entity.prototype = new EventHandling();
 Entity.prototype.get = function(name, def) {
@@ -60,6 +61,15 @@ Entity.prototype.getComponentNames = function() {
         l.push(n);
     }
     return l;
+};
+Entity.prototype.propagate = function(eventname, component) {
+    var self = this;
+
+    this.bind(eventname, function() {
+        var c = self.get(component);
+        console.log("propagating '" + eventname +"' event to ", c);
+        c.trigger.apply(c, arguments);
+    });
 };
 
 function Behavior(in_components) {

@@ -8,6 +8,8 @@ function ViewPort(canvas_id) {
         y: 0,
         zoom: 1
     });
+
+    this.propagate('mouse', 'scene');
 }
 ViewPort.prototype = new Entity();
 ViewPort.prototype.onsetscene = function(e, scene) {
