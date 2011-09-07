@@ -1,7 +1,7 @@
 function BouncingBallScene(R, D) {
     var dot;
 
-    this.add(momentum, gravity, renderer, bounds);
+    this.add(momentum, gravity, bounds);
     for (var i=0; i<D; i++) {
         dot = new Entity({
             'position': new V(50, 100)
@@ -13,9 +13,7 @@ function BouncingBallScene(R, D) {
         this.add(dot);
     }
 
-    renderer.zoom = 0.75;
-    renderer.x = 100;
-    renderer.y = 50;
+    this.set('clearEachFrame', true);
 }
 BouncingBallScene.prototype = new Scene();
 

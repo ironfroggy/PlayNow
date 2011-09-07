@@ -26,7 +26,7 @@ Rendered.prototype.onbeforetick = function() {
     ,   offset_y = viewport.get('y')
     ;
 
-    if (viewport.get('clearEachFrame')) {
+    if (viewport.get('scene').get('clearEachFrame')) {
         ctx.save();
 
         ctx.scale(zoom, zoom);
