@@ -29,6 +29,14 @@ momentum.bind('entitytick', function(e, t, entity, update) {
     update({
         'position': entity.get('position').add(v.multiply(t))
     });
+
+    var r = entity.get('rotation')
+    ,   rv = entity.get('rotation-velocity')
+    ;
+
+    if (!!rv) {
+        entity.set('rotation', (r+rv)%Math.PI);
+    }
 });
 
 var bounds = new Behavior('position velocity');

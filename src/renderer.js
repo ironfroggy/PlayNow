@@ -5,16 +5,18 @@ Rendered.prototype = new Behavior('position');
 Rendered.prototype.onentitytick = function(e, t, entity) {
     var position = entity.get('position')
     ,   color = entity.get('color')
-    ,   size = 10
+    ,   scale = entity.get('scale', 1.0)
     ,   ctx = this.get('viewport').get('ctx')
     ;
 
     ctx.save();
 
     ctx.translate(position[0], position[1]);
+    ctx.rotate(entity.get('rotation', 0));
+    ctx.scale(scale, scale);
 
     ctx.fillStyle = colorStyle(color);
-    ctx.fillRect(-size/2, -size/2, size, size);
+    ctx.fillRect(-10/2, -10/2, 10, 10);
 
     ctx.restore();
 };
