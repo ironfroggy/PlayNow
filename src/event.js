@@ -9,6 +9,23 @@ EventHandling.prototype.bind = function(eventname, callback) {
     }
     this.__event_handlers[eventname].push(callback);
 }
+EventHandling.prototype.unbind = function(eventname, callback) {
+    if (typeof this.__event_handlers === 'undefined') {
+        return 0;
+    }
+    if (typeof this.__event_handlers[eventname] === 'undefined') {
+        return 0;
+    }
+    var r = 0;
+    for (var i=0, l=this.__event_handlers[eventname].length; i<l; i++) {
+        var reg_callback = this.__event_handlers[eventname][i];
+        if (!callback || reg_callback === callback) {
+            this.__event_handlers[eventname].splice(i, 1);
+            r += 1;
+        }
+    }
+    return r;
+}
 
 EventHandling.prototype.trigger = function (eventname) {
     var args = Array.prototype.slice.call(arguments, 1, arguments.length)
