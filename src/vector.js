@@ -41,6 +41,13 @@ R.prototype.intersects = function(b) {
             this[1] > (b[1]+b[3]) ||
             this[1]+this[3] < b[1]
         ));
+    } else if (b instanceof V) {
+        return (!(
+            this.x > b.x ||
+            this.x + this.w < b.x ||
+            this.y > b.y ||
+            this.y + this.h < b.y
+        ));
     } else {
         var i=0, l=b.length, c=[];
         for (; i<l; i++) {
