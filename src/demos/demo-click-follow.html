@@ -1,0 +1,71 @@
+<html>
+    <head>
+        <title>DEMO</title>
+    </head>
+    <body>
+        <canvas id=c width=640 height=480 />
+
+        <script type="text/javascript" src="../yepnope.1.0.2-min.js"></script>
+        <script type="text/javascript" src="../playnow/playnow.js"></script>
+        <script type="text/javascript">
+            now.onload(function(){
+                function SeekPoint(target) {
+                    this.target = target;
+                }
+                SeekPoint.prototype = new Behavior('position velocity');
+                SeekPoint.prototype.ontickentity = function(e, t, entity) {
+                    var target = this.target;
+                    if (typeof target !== 'undefined') {
+                        var position = entity.get('position');
+                        var velocity = entity.get('velocity');
+                        var new_velocity = new V(
+                            (velocity[0] + (target[0] - position[0])) * 0.95,
+                            (velocity[1] + (target[1] - position[1])) * 0.95
+                        );
+
+                        entity.set('velocity', new_velocity);
+                    }
+                };
+
+                function SeekDemo(R, D) {
+                    this.seekpoint = new SeekPoint();
+                    this.add(this.seekpoint, momentum);
+
+                    for (var i=0; i<500; i++) {
+                        dot = new Entity({
+                            'position': new V(50, 100)
+                        ,   'velocity': new V(Math.random()*R-R/2, Math.random()*R-R/2)
+                        ,   'weight': 0.0
+                        ,   'bounce': Math.random()*0.5 + 0.25
+                        ,   'color': [Math.random(), Math.random(), Math.random(), Math.random()]
+                        });
+                        this.add(dot);
+                    }
+
+                    this.set('clearEachFrame', true);
+                }
+                SeekDemo.prototype = new Scene();
+                SeekDemo.prototype['onmouse.up'] = function(e, coord) {
+                    this.seekpoint.target = coord;
+                };
+                SeekDemo.prototype['onmouse.down'] = scramble;
+                SeekDemo.prototype['onmouse.drag'] = scramble;
+                function scramble(e, coord) {
+                    var i, e = this.entities, l = e.length, x, y, r=1000;
+                    for (i=0; i<l; i++) {
+                        x = -r + Math.random()*r*2;
+                        y = -r + Math.random()*r*2;
+                        e[i].set('velocity', new V(x, y));
+                    }
+                };
+                SeekDemo.prototype['onmouse'] = function(e, coord) {
+                    console.log(e, coord);
+                };
+
+                var viewport = new ViewPort('c');
+                var scene = new SeekDemo(500, 500);
+                viewport.set('scene', scene);
+            });
+        </script>
+    </body>
+</html>
