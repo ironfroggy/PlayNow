@@ -1,5 +1,7 @@
 function Rendered(viewport) {
     this.set('viewport', viewport);
+
+    this._images = {};
 }
 Rendered.prototype = new Behavior('position');
 Rendered.prototype.onentitytick = function(e, t, entity) {
@@ -41,6 +43,31 @@ Rendered.prototype.onbeforetick = function() {
 Rendered.prototype.onaftertick = function() {
     var ctx = this.get('viewport').get('ctx');
     ctx.restore();
+};
+Rendered.prototype.prepareScene = function(scene) {
+    var entity, image, image_src
+    ,   images_loading = 0
+    ;
+    for (var i=0,l=scene.entities.length; i<l; i++) {
+        entity = scene.entities[i];
+        image_src = entity.get('image', null);
+        if (image_src !== null) {
+            if (!this._image[image_src]) {
+                images_loading += 1;
+                this._images[image_src] = new Image();
+                this._images[image_src].src = image_src;
+                this._images[image_src].onload = function() {
+                    images_loading -= 1;
+                    checkLoadingDone();
+                };
+            }
+        }
+    }
+    checkLoadingDone() {
+        if (images_loading === 0) {
+            scene.trigger('ready');
+        }
+    }
 };
 
 // render utilities

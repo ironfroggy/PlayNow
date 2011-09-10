@@ -3,30 +3,7 @@
         <title>DEMO</title>
     </head>
     <body>
-        <canvas id=c width=640 height=480 />
-
-        <script type="text/javascript" src="yepnope.1.0.2-min.js"></script>
-        <script type="text/javascript">
-            var viewport, scene;
-
-            yepnope({
-                test: true,
-                yep: [
-                    "vector.js",
-                    "event.js",
-                    "entity.js",
-                    "viewport.js",
-                    "behavior.js",
-                    "scene.js",
-                    "renderer.js",
-                    "run." + location.hash.slice(1, location.hash.length) + ".js",
-                ],
-                complete: function() {
-                    viewport = new ViewPort('c');
-                    viewport.set('scene', scene);
-                    scene.run();
-                }
-            })
-        </script>
+        <h3>Demo</h3>
+        <li><a href="demo-bounce.html">Bounce</a></li>
     </body>
 </html>

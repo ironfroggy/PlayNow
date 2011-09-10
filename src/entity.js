@@ -1,6 +1,8 @@
 function Entity(data) {
-    this._components = data || {};
+    this._components = {};
     this._propagation = {};
+    
+    this.update(data);
 }
 Entity.prototype = new EventHandling();
 Entity.prototype.get = function(name, def) {
