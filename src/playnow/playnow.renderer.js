@@ -7,6 +7,7 @@ Rendered.prototype = new Behavior('position');
 Rendered.prototype.onentitytick = function(e, t, entity) {
     var position = entity.get('position')
     ,   color = entity.get('color')
+    ,   image = entity.get('image')
     ,   scale = entity.get('scale', 1.0)
     ,   ctx = this.get('viewport').get('ctx')
     ;
@@ -17,8 +18,15 @@ Rendered.prototype.onentitytick = function(e, t, entity) {
     ctx.rotate(entity.get('rotation', 0));
     ctx.scale(scale, scale);
 
-    ctx.fillStyle = colorStyle(color);
-    ctx.fillRect(-10/2, -10/2, 10, 10);
+    if (image) {
+        ctx.drawImage(
+            image,
+            0, 0
+        )
+    } else {
+        ctx.fillStyle = colorStyle(color);
+        ctx.fillRect(-10/2, -10/2, 10, 10);
+    }
 
     ctx.restore();
 };
@@ -47,33 +55,42 @@ Rendered.prototype.onaftertick = function() {
 Rendered.prototype.prepareScene = function(scene) {
     var entity, image, image_src
     ,   images_loading = 0
+    ,   self = this
     ;
+    this._image = {};
+
     for (var i=0,l=scene.entities.length; i<l; i++) {
         entity = scene.entities[i];
         image_src = entity.get('image', null);
         if (image_src !== null) {
-            if (!this._image[image_src]) {
+            if (typeof this._image[image_src] === 'undefined') {
                 images_loading += 1;
                 this._images[image_src] = new Image();
                 this._images[image_src].src = image_src;
+                this._images[image_src].for_entity = entity;
                 this._images[image_src].onload = function() {
                     images_loading -= 1;
-                    checkLoadingDone();
+                    checkLoadingDone.call(this);
                 };
             }
         }
     }
     function checkLoadingDone() {
+        this.for_entity.set('image', this);
         if (images_loading === 0) {
-            scene.trigger('ready');
+            self.trigger('ready');
         }
     }
 };
 
 // render utilities
 function colorStyle(color) {
-    if (color.length === 3)
-        return ['rgb(', parseInt(color[0]*255), ', ', parseInt(color[1]*255), ', ', parseInt(color[2]*255), ')'].join('');
-    else
-        return ['rgba(', parseInt(color[0]*255), ', ', parseInt(color[1]*255), ', ', parseInt(color[2]*255), ', ', color[3], ')'].join('');
+    try {
+        if (color.length === 3)
+            return ['rgb(', parseInt(color[0]*255), ', ', parseInt(color[1]*255), ', ', parseInt(color[2]*255), ')'].join('');
+        else
+            return ['rgba(', parseInt(color[0]*255), ', ', parseInt(color[1]*255), ', ', parseInt(color[2]*255), ', ', color[3], ')'].join('');
+    } catch (e) {
+        return 'grey';
+    }
 }

@@ -69,5 +69,10 @@ ViewPort.prototype.onsetscene = function(e, scene) {
         renderer.trigger('entitytick', t, entity);
     });
 
-    scene.run();
+    scene.set('viewport', this);
+
+    renderer.bind('ready', function() {
+        scene.run();
+    });
+    renderer.prepareScene(scene);
 };
