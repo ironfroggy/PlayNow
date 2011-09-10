@@ -44,7 +44,7 @@ EventHandling.prototype.bindonce = function (eventname, callback) {
     }
 
     this.__event_flags[eventname] = false;
-    this.bind(eventname, callback);
+    this.bind(eventname, callback || function(){});
 };
 
 EventHandling.prototype.trigger = function (eventname) {
