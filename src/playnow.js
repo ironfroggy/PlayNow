@@ -22,13 +22,13 @@ if (typeof now === 'undefined') {
     yepnope({
         test: true,
         yep: [
-            "vector.js",
-            "event.js",
-            "entity.js",
-            "renderer.js",
-            "viewport.js",
-            "behavior.js",
-            "scene.js",
+            "playnow.vector.js",
+            "playnow.event.js",
+            "playnow.entity.js",
+            "playnow.renderer.js",
+            "playnow.viewport.js",
+            "playnow.behavior.js",
+            "playnow.scene.js",
         ],
         complete: function() {
             now._set_loaded();
