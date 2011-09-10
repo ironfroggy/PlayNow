@@ -1,10 +1,16 @@
 var now;
 
 (function(){
-    var my_src, script_dir;
+    var my_src, script_dir, scripts, i;
 
     if (typeof now === 'undefined') {
-        my_src = document.scripts[document.scripts.length - 1].getAttribute('src');
+        scripts = document.getElementsByTagName('script');
+        for (i=scripts.length-1; i >= 0; i-=1) {
+            if (scripts[i].getAttribute('type') === 'text/javascript') {
+                my_src = scripts[i].getAttribute('src');
+                break;
+            }
+        }
         script_dir = my_src.replace('playnow.js', '');
 
         now = {
