@@ -63,7 +63,7 @@ Rendered.prototype.prepareScene = function(scene) {
             }
         }
     }
-    checkLoadingDone() {
+    function checkLoadingDone() {
         if (images_loading === 0) {
             scene.trigger('ready');
         }

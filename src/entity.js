@@ -9,8 +9,10 @@ Entity.prototype.get = function(name, def) {
     return typeof this._components[name] === 'undefined' ? def : this._components[name];
 };
 Entity.prototype.set = function(name, data) {
-    if (this.trigger('set', name, data) !== false && this.trigger('set'+name, data) !== false) {
-        this._components[name] = data;
+    var previous_value = this._components[name];
+    this._components[name] = data;
+    if (this.trigger('set', name, data) === false || this.trigger('set'+name, data) === false) {
+        this._components[name] = previous_value;
     }
     if (data instanceof EventHandling) {
         data.trigger('setas', this, name);

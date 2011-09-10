@@ -68,4 +68,6 @@ ViewPort.prototype.onsetscene = function(e, scene) {
     scene.bind('tickentity', function(e, t, entity) {
         renderer.trigger('entitytick', t, entity);
     });
+
+    scene.run();
 };

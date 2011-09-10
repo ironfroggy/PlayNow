@@ -25,10 +25,10 @@ if (typeof now === 'undefined') {
             "vector.js",
             "event.js",
             "entity.js",
+            "renderer.js",
             "viewport.js",
             "behavior.js",
             "scene.js",
-            "renderer.js",
         ],
         complete: function() {
             now._set_loaded();

@@ -6,27 +6,36 @@
         <canvas id=c width=640 height=480 />
 
         <script type="text/javascript" src="yepnope.1.0.2-min.js"></script>
+        <script type="text/javascript" src="playnow.js"></script>
         <script type="text/javascript">
-            var viewport, scene;
+            now.onload(function(){
+                function BouncingBallScene(R, D) {
+                    var dot, color;
 
-            yepnope({
-                test: true,
-                yep: [
-                    "vector.js",
-                    "event.js",
-                    "entity.js",
-                    "viewport.js",
-                    "behavior.js",
-                    "scene.js",
-                    "renderer.js",
-                    "run." + location.hash.slice(1, location.hash.length) + ".js",
-                ],
-                complete: function() {
-                    viewport = new ViewPort('c');
-                    viewport.set('scene', scene);
-                    scene.run();
+                    this.add(momentum, gravity, bounds);
+                    for (var i=0; i<D; i++) {
+                        color = [Math.random(), Math.random(), Math.random(), Math.random()];
+                        dot = new Entity({
+                            'position': new V(50, 100)
+                        ,   'velocity': new V(Math.random()*R-R/2, Math.random()*R-R/2)
+                        ,   'weight': 0.0
+                        ,   'bounce': Math.random()*0.5 + 0.25
+                        ,   'rotation': Math.random() * Math.PI
+                        ,   'rotation-velocity': Math.random() * Math.PI - Math.PI/2
+                        ,   'color': color 
+                        ,   'scale': 0.5 + Math.random() * 2
+                        });
+                        this.add(dot);
+                    }
+
+                    this.set('clearEachFrame', true);
                 }
-            })
+                BouncingBallScene.prototype = new Scene();
+
+                var viewport = new ViewPort('c');
+                var scene = new BouncingBallScene(500, 50);
+                viewport.set('scene', scene);
+            });
         </script>
     </body>
 </html>
