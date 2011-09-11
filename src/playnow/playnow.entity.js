@@ -5,6 +5,7 @@ function Entity(data) {
     this.update(data);
 }
 Entity.prototype = new EventHandling();
+Entity.prototype.constructor = Entity;
 Entity.prototype.get = function(name, def) {
     return typeof this._components[name] === 'undefined' ? def : this._components[name];
 };

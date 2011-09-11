@@ -29,6 +29,7 @@
                     ,   entity
                     ,   entity_pos
                     ;
+
                     for (i=0;i < l; i+=1) {
                         entity = targets[i];
                         entity_pos = entity.get('mousebounds');
@@ -39,7 +40,7 @@
                 };
 
                 function Smiley() {
-                    this.constructor.call(this);
+                    Entity.apply(this, arguments);
 
                     this.bind('mouse.drag', function(e, pos, lastpos) {
                         var curpos = this.get('position')
@@ -49,6 +50,7 @@
                     });
                 };
                 Smiley.prototype = new Entity();
+                Smiley.prototype.constructor = Smiley;
 
                 function MenuScene() {
                     var i, entity, mousemap, position;
@@ -61,7 +63,7 @@
 
                     for (i=0; i<1; i+=1) {
                         position = new V(Math.random() * 640, Math.random() * 480)
-                        entity = new Entity({
+                        entity = new Smiley({
                             position: position
                         ,   mousebounds: new R(position.x, position.y, 100, 100)
                         ,   image: "/src/smiley.png"
