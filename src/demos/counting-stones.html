@@ -38,7 +38,7 @@
                         self.__mousemap_lock = entity;
                     }
                     function mouserelease(entity) {
-                        if (!!entity && entity === this.__mousemap_lock) {
+                        if (!!entity && entity === self.__mousemap_lock) {
                             entity.trigger('mouse.lock.release');
                             self.__mousemap_lock = null;
                         }
@@ -81,6 +81,8 @@
                 function Smiley() {
                     Entity.apply(this, arguments);
 
+                    this.dragging = false;
+
                     this.bind('mouse.drag', function(e, pos, lastpos) {
                         var curpos = this.get('position')
                         ,   offset = lastpos.subtract(pos)
@@ -89,6 +91,9 @@
                         ,   imgdata = img.getImageData(relpos.x, relpos.y, 1, 1)
                         ,   empty = imgdata.data[3] === 0;
                         ;
+                        
+                        this.dragging = true;
+
                         if (empty) {
                             e.mousemissed = true;
                             e.mouserelease(this);
@@ -104,7 +109,13 @@
                 Smiley.prototype = new Entity();
                 Smiley.prototype.constructor = Smiley;
                 Smiley.prototype['onmouse.lock.release'] = function(e) {
-                    console.log("I have been dropped!");
+                    if (this.dragging) {
+                        arguments[0] = 'mouse.drop';
+                        this.trigger.apply(this, arguments);
+                    }
+                };
+                Smiley.prototype['onmouse.drop'] = function(e) {
+                    console.log("I was dropped!");
                 };
 
                 function MenuScene() {
