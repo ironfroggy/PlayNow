@@ -36,15 +36,20 @@ Rendered.prototype.onbeforetick = function() {
     ,   zoom = viewport.get('zoom')
     ,   offset_x = viewport.get('x')
     ,   offset_y = viewport.get('y')
+    ,   background_color = viewport.get('scene').get('clearEachFrame', false) || [1,1,1]
     ;
 
-    if (viewport.get('scene').get('clearEachFrame')) {
+    if (background_color && background_color.length === 3) {
+        background_color.push(viewport.get('scene').get('clearEachFrameTranslucent', 0.3));
+    }
+
+    if (background_color) {
         ctx.save();
 
         ctx.scale(zoom, zoom);
         ctx.translate(offset_x, offset_y);
 
-        ctx.fillStyle = colorStyle(this.get('backgroundcolor', [1, 1, 1, 0.3]));
+        ctx.fillStyle = colorStyle(background_color);
         ctx.fillRect(-100, -100, 840, 680);
     }
 };

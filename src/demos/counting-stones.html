@@ -10,43 +10,43 @@
         <script type="text/javascript">
             var viewport, scene;
 
-            function MouseMap() {
-                this.__mousemap_targets = [];
-            }
-            MouseMap.prototype = new Entity();
-            MouseMap.prototype.addTarget = function(target) {
-                this.__mousemap_targets.push(target);
-            };
-            MouseMap.prototype.onmouse = function(e, event_pos) {
-                var i = 0
-                ,   l = this.__mousemap_targets.length
-                ,   targets = this.__mousemap_targets
-                ,   entity
-                ,   entity_pos
-                ;
-                for (i=0;i < l; i+=1) {
-                    entity = targets[i];
-                    entity_pos = entity.get('mousebounds');
-                    if (entity_pos.intersects(event_pos)) {
-                        return entity;
-                    }
-                }
-            };
-
             now.onload(function(){
-                function MenuScene(R, D) {
+                function MouseMap() {
+                    this.__mousemap_targets = [];
+                }
+                MouseMap.prototype = new Entity();
+                MouseMap.prototype.addTarget = function(target) {
+                    this.__mousemap_targets.push(target);
+                };
+                MouseMap.prototype.onmouse = function(e, event_pos) {
+                    var i = 0
+                    ,   l = this.__mousemap_targets.length
+                    ,   targets = this.__mousemap_targets
+                    ,   entity
+                    ,   entity_pos
+                    ;
+                    for (i=0;i < l; i+=1) {
+                        entity = targets[i];
+                        entity_pos = entity.get('mousebounds');
+                        if (entity_pos.intersects(event_pos)) {
+                            return entity;
+                        }
+                    }
+                };
+
+                function MenuScene() {
                     this.add(new Entity({
                         position: new V(200, 200)
                     ,   mousebounds: new R(200, 200, 100, 100)
                     ,   image: "/src/smiley.png"
                     }));
 
-                    this.set('clearEachFrame', true);
+                    this.set('clearEachFrame', [1, 1, 0.7, 1]);
                 }
                 MenuScene.prototype = new Scene();
 
                 viewport = new ViewPort('c');
-                scene = new MenuScene(1000, 500);
+                scene = new MenuScene();
                 viewport.set('scene', scene);
             });
         </script>
