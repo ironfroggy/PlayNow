@@ -13,6 +13,7 @@
             now.onload(function(){
                 function MouseMap() {
                     this.__mousemap_targets = [];
+                    this.__mousemap_lock = null;
                 }
                 MouseMap.prototype = new Entity();
                 MouseMap.prototype.addTarget = function(target) {
@@ -23,22 +24,62 @@
                     });
                 };
                 MouseMap.prototype.onmouse = function(e, event_pos) {
-                    var i = 0
+                    var self = this
+                    ,   i = 0
                     ,   l = this.__mousemap_targets.length
                     ,   targets = this.__mousemap_targets
                     ,   entity
                     ,   entity_pos
+                    ,   args = arguments;
                     ;
 
-                    for (i=0;i < l; i+=1) {
-                        entity = targets[i];
-                        entity_pos = entity.get('mousebounds');
-                        if (entity_pos.intersects(event_pos)) {
-                            e = entity.trigger.apply(entity, arguments);
-                            if (!e.mousemissed) {
+                    function mouselock(entity) {
+                        self.__mousemap_lock = entity;
+                    }
+                    function mouserelease(entity) {
+                        if (entity === this.__mousemap_lock) {
+                            self.__mousemap_lock = null;
+                        }
+                    }
+
+                    e.mouselock = mouselock;
+                    e.mouserelease = mouserelease;
+
+                    try {
+                        if (this.__mousemap_lock !== null) {
+                            entity = this.__mousemap_lock;
+                            if (try_target.call(this, entity)) {
+                                return;
+                            }
+                        }
+                        for (i=0;i < l; i+=1) {
+                            entity = targets[i];
+                            if (try_target.call(this, entity)) {
                                 break;
                             }
                         }
+                        if (i === l) {
+                            this.__mousemap_lock = null;
+                        }
+                        delete e.mouselock;
+                        delete e.mouserelease;
+                    } catch (e) {
+                        delete e.mouselock;
+                        delete e.mouserelease;
+                    }
+
+                    function try_target(entity) {
+                        var e, entity_pos;
+                        entity_pos = entity.get('mousebounds');
+                        if (entity_pos.intersects(event_pos)) {
+                            e = entity.trigger.apply(entity, args);
+                            if (!e.mousemissed) {
+                                return true;
+                            } else if (!!e.mouselock) {
+                                this.__mousemap_lock = e.mouselock;
+                            }
+                        }
+                        return false;
                     }
                 };
 
@@ -55,9 +96,14 @@
                         ;
                         if (empty) {
                             e.mousemissed = true;
+                            e.mouserelease(this);
                         } else {
                             this.set('position', curpos.subtract(offset));
+                            e.mouselock(this);
                         }
+                    });
+                    this.bind('mouse.up', function(e) {
+                        e.mouserelease(this);
                     });
                 };
                 Smiley.prototype = new Entity();
