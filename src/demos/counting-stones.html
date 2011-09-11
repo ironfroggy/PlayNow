@@ -34,10 +34,12 @@
                     ;
 
                     function mouselock(entity) {
+                        entity.trigger('mouse.lock.acquire');
                         self.__mousemap_lock = entity;
                     }
                     function mouserelease(entity) {
-                        if (entity === this.__mousemap_lock) {
+                        if (!!entity && entity === this.__mousemap_lock) {
+                            entity.trigger('mouse.lock.release');
                             self.__mousemap_lock = null;
                         }
                     }
@@ -59,7 +61,7 @@
                             }
                         }
                         if (i === l) {
-                            this.__mousemap_lock = null;
+                            e.mouserelease(this.__mousemap_lock);
                         }
                         delete e.mouselock;
                         delete e.mouserelease;
