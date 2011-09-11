@@ -32,15 +32,16 @@ Rendered.prototype.onentitytick = function(e, t, entity) {
 };
 Rendered.prototype.onbeforetick = function() {
     var viewport = this.get('viewport')
+    ,   scene = viewport.get('scene')
     ,   ctx = viewport.get('ctx')
     ,   zoom = viewport.get('zoom')
     ,   offset_x = viewport.get('x')
     ,   offset_y = viewport.get('y')
-    ,   background_color = viewport.get('scene').get('clearEachFrame', false) || [1,1,1]
+    ,   background_color = scene.get('clearEachFrame', false) || [1,1,1]
     ;
 
     if (background_color && background_color.length === 3) {
-        background_color.push(viewport.get('scene').get('clearEachFrameTranslucent', 0.3));
+        background_color.push(scene.get('clearEachFrameTranslucent', 0.3));
     }
 
     if (background_color) {
