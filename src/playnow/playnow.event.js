@@ -75,7 +75,6 @@ EventHandling.prototype.trigger = function (e) {
     }
 
     function trigger_specific(specific_eventname) {
-
         if (typeof this.__event_handlers !== 'undefined' && typeof this.__event_handlers[specific_eventname] !== 'undefined') {
             for (var i=0,l=this.__event_handlers[specific_eventname].length; i<l; i++) {
                 this.__event_handlers[specific_eventname][i].apply(this, args);

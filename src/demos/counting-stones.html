@@ -47,28 +47,23 @@
                     e.mouselock = mouselock;
                     e.mouserelease = mouserelease;
 
-                    try {
-                        if (this.__mousemap_lock !== null) {
-                            entity = this.__mousemap_lock;
-                            if (try_target.call(this, entity)) {
-                                return;
-                            }
+                    if (this.__mousemap_lock !== null) {
+                        entity = this.__mousemap_lock;
+                        if (try_target.call(this, entity)) {
+                            return;
                         }
-                        for (i=0;i < l; i+=1) {
-                            entity = targets[i];
-                            if (try_target.call(this, entity)) {
-                                break;
-                            }
-                        }
-                        if (i === l) {
-                            e.mouserelease(this.__mousemap_lock);
-                        }
-                        delete e.mouselock;
-                        delete e.mouserelease;
-                    } catch (e) {
-                        delete e.mouselock;
-                        delete e.mouserelease;
                     }
+                    for (i=0;i < l; i+=1) {
+                        entity = targets[i];
+                        if (try_target.call(this, entity)) {
+                            break;
+                        }
+                    }
+                    if (i === l) {
+                        e.mouserelease(this.__mousemap_lock);
+                    }
+                    delete e.mouselock;
+                    delete e.mouserelease;
 
                     function try_target(entity) {
                         var e, entity_pos;
@@ -77,8 +72,6 @@
                             e = entity.trigger.apply(entity, args);
                             if (!e.mousemissed) {
                                 return true;
-                            } else if (!!e.mouselock) {
-                                this.__mousemap_lock = e.mouselock;
                             }
                         }
                         return false;
@@ -110,6 +103,9 @@
                 };
                 Smiley.prototype = new Entity();
                 Smiley.prototype.constructor = Smiley;
+                Smiley.prototype['onmouse.lock.release'] = function(e) {
+                    console.log("I have been dropped!");
+                };
 
                 function MenuScene() {
                     var i, entity, mousemap, position;
