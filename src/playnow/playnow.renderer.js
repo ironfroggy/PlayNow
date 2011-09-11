@@ -75,8 +75,12 @@ Rendered.prototype.prepareScene = function(scene) {
             }
         }
     }
+    checkLoadingDone.call(this);
+
     function checkLoadingDone() {
-        this.for_entity.set('image', this);
+        if (this.for_entity) {
+            this.for_entity.set('image', this);
+        }
         if (images_loading === 0) {
             self.trigger('ready');
         }
