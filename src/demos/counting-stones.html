@@ -17,6 +17,10 @@
                 MouseMap.prototype = new Entity();
                 MouseMap.prototype.addTarget = function(target) {
                     this.__mousemap_targets.push(target);
+                    target.bind('setposition', function(e, pos) {
+                        var bounds = target.get('mousebounds');
+                        target.set('mousebounds', new R(pos.x, pos.y, bounds.w, bounds.h));
+                    });
                 };
                 MouseMap.prototype.onmouse = function(e, event_pos) {
                     var i = 0
@@ -29,19 +33,42 @@
                         entity = targets[i];
                         entity_pos = entity.get('mousebounds');
                         if (entity_pos.intersects(event_pos)) {
-                            return entity;
+                            entity.trigger.apply(entity, arguments);
                         }
                     }
                 };
 
+                function Smiley() {
+                    this.constructor.call(this);
+
+                    this.bind('mouse.drag', function(e, pos, lastpos) {
+                        var curpos = this.get('position')
+                        ,   offset = lastpos.subtract(pos)
+                        ;
+                        this.set('position', curpos.subtract(offset));
+                    });
+                };
+                Smiley.prototype = new Entity();
+
                 function MenuScene() {
-                    this.add(new Entity({
-                        position: new V(200, 200)
-                    ,   mousebounds: new R(200, 200, 100, 100)
-                    ,   image: "/src/smiley.png"
-                    }));
+                    var i, entity, mousemap, position;
 
                     this.set('clearEachFrame', [1, 1, 0.7, 1]);
+
+                    mousemap = new MouseMap();
+                    this.set('mousemap', mousemap);
+                    this.propagate('mouse', 'mousemap');
+
+                    for (i=0; i<1; i+=1) {
+                        position = new V(Math.random() * 640, Math.random() * 480)
+                        entity = new Entity({
+                            position: position
+                        ,   mousebounds: new R(position.x, position.y, 100, 100)
+                        ,   image: "/src/smiley.png"
+                        });
+                        mousemap.addTarget(entity);
+                        this.add(entity);
+                    }
                 }
                 MenuScene.prototype = new Scene();
 

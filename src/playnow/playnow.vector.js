@@ -8,6 +8,9 @@ V.prototype = new Array();
 V.prototype.add = function(b) {
     return new V(this[0] + b[0], this[1] + b[1]);
 };
+V.prototype.subtract = function(b) {
+    return new V(this[0] - b[0], this[1] - b[1]);
+};
 V.prototype.getLength = function() {
     var length_sqr = this[0]*this[0] + this[1]*this[1] // + this[2]*this[2]
     ,   length = Math.sqrt(length_sqr)
