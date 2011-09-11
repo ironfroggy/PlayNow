@@ -81,6 +81,7 @@ Rendered.prototype.prepareScene = function(scene) {
 
                     ctx.drawImage(this, 0, 0);
                     this.for_entity.set('image', canvas);
+                    this.for_entity.set('imagectx', ctx);
 
                     images_loading -= 1;
                     checkLoadingDone.call(this);

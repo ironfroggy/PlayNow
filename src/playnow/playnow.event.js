@@ -58,8 +58,9 @@ EventHandling.prototype.trigger = function (e) {
     var args = Array.prototype.slice.call(arguments, 1, arguments.length)
     ,   eventname = e instanceof Event ? e.name : e
     ,   event_name_parts = eventname.split(".")
+    ,   e = e instanceof Event ? e : new Event(e)
     ;
-    args.unshift(new Event(eventname));
+    args.unshift(e);
 
     if (typeof this.__event_flags !== 'undefined') {
         if (this.__event_flags[eventname] instanceof Array) {
@@ -85,4 +86,6 @@ EventHandling.prototype.trigger = function (e) {
             default_handler.apply(this, args);
         }
     }
+
+    return e;
 }

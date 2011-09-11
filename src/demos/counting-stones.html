@@ -34,8 +34,10 @@
                         entity = targets[i];
                         entity_pos = entity.get('mousebounds');
                         if (entity_pos.intersects(event_pos)) {
-                            entity.trigger.apply(entity, arguments);
-                            break;
+                            e = entity.trigger.apply(entity, arguments);
+                            if (!e.mousemissed) {
+                                break;
+                            }
                         }
                     }
                 };
@@ -46,8 +48,16 @@
                     this.bind('mouse.drag', function(e, pos, lastpos) {
                         var curpos = this.get('position')
                         ,   offset = lastpos.subtract(pos)
+                        ,   relpos = pos.subtract(curpos)
+                        ,   img = this.get('imagectx')
+                        ,   imgdata = img.getImageData(relpos.x, relpos.y, 1, 1)
+                        ,   empty = imgdata.data[3] === 0;
                         ;
-                        this.set('position', curpos.subtract(offset));
+                        if (empty) {
+                            e.mousemissed = true;
+                        } else {
+                            this.set('position', curpos.subtract(offset));
+                        }
                     });
                 };
                 Smiley.prototype = new Entity();
