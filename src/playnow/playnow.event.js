@@ -1,3 +1,10 @@
+function Event(name) {
+    this.name = name;
+}
+Event.prototype.toString = function() {
+    return this.name;
+};
+
 function EventHandling() {}
 
 EventHandling.prototype.bind = function(eventname, callback) {
@@ -47,11 +54,12 @@ EventHandling.prototype.bindonce = function (eventname, callback) {
     this.bind(eventname, callback || function(){});
 };
 
-EventHandling.prototype.trigger = function (eventname) {
+EventHandling.prototype.trigger = function (e) {
     var args = Array.prototype.slice.call(arguments, 1, arguments.length)
+    ,   eventname = e instanceof Event ? e.name : e
     ,   event_name_parts = eventname.split(".")
     ;
-    args.unshift(eventname);
+    args.unshift(new Event(eventname));
 
     if (typeof this.__event_flags !== 'undefined') {
         if (this.__event_flags[eventname] instanceof Array) {
@@ -66,6 +74,7 @@ EventHandling.prototype.trigger = function (eventname) {
     }
 
     function trigger_specific(specific_eventname) {
+
         if (typeof this.__event_handlers !== 'undefined' && typeof this.__event_handlers[specific_eventname] !== 'undefined') {
             for (var i=0,l=this.__event_handlers[specific_eventname].length; i<l; i++) {
                 this.__event_handlers[specific_eventname][i].apply(this, args);
