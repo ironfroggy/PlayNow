@@ -75,6 +75,13 @@ Rendered.prototype.prepareScene = function(scene) {
                 this._images[image_src].src = image_src;
                 this._images[image_src].for_entity = entity;
                 this._images[image_src].onload = function() {
+                    var canvas = document.createElement('canvas')
+                    ,   ctx = canvas.getContext('2d')
+                    ;
+
+                    ctx.drawImage(this, 0, 0);
+                    this.for_entity.set('image', canvas);
+
                     images_loading -= 1;
                     checkLoadingDone.call(this);
                 };
@@ -84,9 +91,6 @@ Rendered.prototype.prepareScene = function(scene) {
     checkLoadingDone.call(this);
 
     function checkLoadingDone() {
-        if (this.for_entity) {
-            this.for_entity.set('image', this);
-        }
         if (images_loading === 0) {
             self.trigger('ready');
         }
