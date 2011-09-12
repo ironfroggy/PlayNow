@@ -78,45 +78,46 @@
                     }
                 };
 
-                function Smiley() {
-                    Entity.apply(this, arguments);
+                var Smiley = now.type({
+                    inherit: Entity,
+                    init: function() {
+                        Entity.apply(this, arguments);
 
-                    this.dragging = false;
+                        this.dragging = false;
 
-                    this.bind('mouse.drag', function(e, pos, lastpos) {
-                        var curpos = this.get('position')
-                        ,   offset = lastpos.subtract(pos)
-                        ,   relpos = pos.subtract(curpos)
-                        ,   img = this.get('imagectx')
-                        ,   imgdata = img.getImageData(relpos.x, relpos.y, 1, 1)
-                        ,   empty = imgdata.data[3] === 0;
-                        ;
-                        
-                        this.dragging = true;
+                        this.bind('mouse.drag', function(e, pos, lastpos) {
+                            var curpos = this.get('position')
+                            ,   offset = lastpos.subtract(pos)
+                            ,   relpos = pos.subtract(curpos)
+                            ,   img = this.get('imagectx')
+                            ,   imgdata = img.getImageData(relpos.x, relpos.y, 1, 1)
+                            ,   empty = imgdata.data[3] === 0;
+                            ;
+                            
+                            this.dragging = true;
 
-                        if (empty) {
-                            e.mousemissed = true;
+                            if (empty) {
+                                e.mousemissed = true;
+                                e.mouserelease(this);
+                            } else {
+                                this.set('position', curpos.subtract(offset));
+                                e.mouselock(this);
+                            }
+                        });
+                        this.bind('mouse.up', function(e) {
                             e.mouserelease(this);
-                        } else {
-                            this.set('position', curpos.subtract(offset));
-                            e.mouselock(this);
+                        });
+                    },
+                    'onmouse.lock.release': function(e) {
+                        if (this.dragging) {
+                            arguments[0] = 'mouse.drop';
+                            this.trigger.apply(this, arguments);
                         }
-                    });
-                    this.bind('mouse.up', function(e) {
-                        e.mouserelease(this);
-                    });
-                };
-                Smiley.prototype = new Entity();
-                Smiley.prototype.constructor = Smiley;
-                Smiley.prototype['onmouse.lock.release'] = function(e) {
-                    if (this.dragging) {
-                        arguments[0] = 'mouse.drop';
-                        this.trigger.apply(this, arguments);
+                    },
+                    'onmouse.drop': function(e) {
+                        console.log("I was dropped!");
                     }
-                };
-                Smiley.prototype['onmouse.drop'] = function(e) {
-                    console.log("I was dropped!");
-                };
+                });
 
                 function MenuScene() {
                     var i, entity, mousemap, position;

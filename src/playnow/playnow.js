@@ -36,6 +36,7 @@ var now;
         yepnope({
             test: true,
             yep: [
+                script_dir + "playnow.inherit.js",
                 script_dir + "playnow.vector.js",
                 script_dir + "playnow.event.js",
                 script_dir + "playnow.entity.js",
