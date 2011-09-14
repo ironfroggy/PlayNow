@@ -82,7 +82,6 @@
                         ,   is_locked = entity === this.__mousemap_lock
                         ;
                         if (intersects || is_locked) {
-                            console.log("passing event to entity:", args[0].name);
                             e = entity.trigger.apply(entity, args);
                             if (!e.mousemissed) {
                                 return true;
@@ -123,17 +122,16 @@
                         });
                     },
                     'onmouse.lock.acquire': function(e) {
-                        console.debug('acquire', this.dragging);
+                        this.set('alpha', 0.65);
                     },
                     'onmouse.lock.release': function(e) {
-                        console.debug('release', this.dragging);
+                        this.set('alpha', 1.00);
                         if (this.dragging) {
                             arguments[0] = 'mouse.drop';
                             this.trigger.apply(this, arguments);
                         }
                     },
                     'onmouse.drop': function(e) {
-                        console.log("I was dropped!");
                     }
                 });
 

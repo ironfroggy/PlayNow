@@ -9,6 +9,7 @@ Rendered.prototype.onentitytick = function(e, t, entity) {
     ,   color = entity.get('color')
     ,   image = entity.get('image')
     ,   scale = entity.get('scale', 1.0)
+    ,   alpha = entity.get('alpha', 1.0)
     ,   ctx = this.get('viewport').get('ctx')
     ;
 
@@ -17,6 +18,7 @@ Rendered.prototype.onentitytick = function(e, t, entity) {
     ctx.translate(position[0], position[1]);
     ctx.rotate(entity.get('rotation', 0));
     ctx.scale(scale, scale);
+    ctx.globalAlpha = alpha;
 
     if (image) {
         ctx.drawImage(
