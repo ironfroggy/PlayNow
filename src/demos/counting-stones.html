@@ -47,12 +47,20 @@
                     e.mouselock = mouselock;
                     e.mouserelease = mouserelease;
 
+                    // If mouse events are locked to one entity, use it.
+
                     if (this.__mousemap_lock !== null) {
                         entity = this.__mousemap_lock;
+                        e.mouselocked = true;
                         if (try_target.call(this, entity)) {
+                            delete e.mouselocked;
                             return;
                         }
+                        delete e.mouselocked;
                     }
+
+                    // Look for matching entities until one matches the coords
+
                     for (i=0;i < l; i+=1) {
                         entity = targets[i];
                         if (try_target.call(this, entity)) {
@@ -60,15 +68,21 @@
                         }
                     }
                     if (i === l) {
-                        e.mouserelease(this.__mousemap_lock);
+                        //e.mouserelease(this.__mousemap_lock);
                     }
+
+                    // Cleanup event methods
                     delete e.mouselock;
                     delete e.mouserelease;
 
                     function try_target(entity) {
-                        var e, entity_pos;
-                        entity_pos = entity.get('mousebounds');
-                        if (entity_pos.intersects(event_pos)) {
+                        var e
+                        ,   entity_pos = entity.get('mousebounds')
+                        ,   intersects = entity_pos.intersects(event_pos)
+                        ,   is_locked = entity === this.__mousemap_lock
+                        ;
+                        if (intersects || is_locked) {
+                            console.log("passing event to entity:", args[0].name);
                             e = entity.trigger.apply(entity, args);
                             if (!e.mousemissed) {
                                 return true;
@@ -96,7 +110,7 @@
                             
                             this.dragging = true;
 
-                            if (empty) {
+                            if (empty && !e.mouselocked) {
                                 e.mousemissed = true;
                                 e.mouserelease(this);
                             } else {
@@ -108,7 +122,11 @@
                             e.mouserelease(this);
                         });
                     },
+                    'onmouse.lock.acquire': function(e) {
+                        console.debug('acquire', this.dragging);
+                    },
                     'onmouse.lock.release': function(e) {
+                        console.debug('release', this.dragging);
                         if (this.dragging) {
                             arguments[0] = 'mouse.drop';
                             this.trigger.apply(this, arguments);
