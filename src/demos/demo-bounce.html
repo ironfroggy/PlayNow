@@ -28,12 +28,12 @@
                         this.add(dot);
                     }
 
-                    this.set('clearEachFrame', true);
+                    this.set('clearEachFrame', [1, 1, 1]);
                 }
                 BouncingBallScene.prototype = new Scene();
 
                 var viewport = new ViewPort('c');
-                var scene = new BouncingBallScene(500, 500);
+                var scene = new BouncingBallScene(250, 250);
                 viewport.set('scene', scene);
             });
         </script>
