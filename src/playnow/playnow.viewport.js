@@ -59,20 +59,12 @@ function ViewPort(canvas_id) {
 ViewPort.prototype = new Entity();
 ViewPort.prototype.onsetscene = function(e, scene) {
     var renderer = this.get('renderer');
-    scene.bind('aftertick', function(e) {
-        renderer.trigger('aftertick');
-    });
-    scene.bind('beforetick', function(e) {
-        renderer.trigger('beforetick');
-    });
-    scene.bind('tickentity', function(e, t, entity) {
-        renderer.trigger('entitytick', t, entity);
-    });
 
     scene.set('viewport', this);
 
     renderer.bind('ready', function() {
         scene.run();
+        renderer.renderFrame();
     });
     renderer.prepareScene(scene);
 };

@@ -4,36 +4,9 @@ function Rendered(viewport) {
     this._images = {};
 }
 Rendered.prototype = new Behavior('position');
-Rendered.prototype.onentitytick = function(e, t, entity) {
-    var position = entity._components['position']
-    ,   color = entity._components['color']
-    ,   image = entity._components['image']
-    ,   scale = entity._components['scale'] || 1.0
-    ,   alpha = entity._components['alpha']
-    ,   alpha = typeof alpha === 'undefined' ? 1.0 : alpha
-    ,   ctx = this._components['viewport']._components['ctx']
-    ;
 
-    ctx.save();
-
-    ctx.translate(position[0], position[1]);
-    ctx.rotate(entity._components['rotation'] || 0);
-    ctx.scale(scale, scale);
-    ctx.globalAlpha = alpha;
-
-    if (image) {
-        ctx.drawImage(
-            image,
-            0, 0
-        )
-    } else {
-        ctx.fillStyle = colorStyle(color);
-        ctx.fillRect(-10/2, -10/2, 10, 10);
-    }
-
-    ctx.restore();
-};
-Rendered.prototype.onbeforetick = function() {
+Rendered.prototype.renderFrame = function() {
+    // Before entities
     var viewport = this.get('viewport')
     ,   scene = viewport.get('scene')
     ,   ctx = viewport.get('ctx')
@@ -56,11 +29,48 @@ Rendered.prototype.onbeforetick = function() {
         ctx.fillStyle = colorStyle(background_color);
         ctx.fillRect(-100, -100, 840, 680);
     }
-};
-Rendered.prototype.onaftertick = function() {
+
+    // Entities
+    for (var i=0,l=scene.entities.length; i<l; i++) {
+        var entity = scene.entities[i]
+        ,   position = entity._components['position']
+        ,   color = entity._components['color']
+        ,   image = entity._components['image']
+        ,   scale = entity._components['scale'] || 1.0
+        ,   alpha = entity._components['alpha']
+        ,   alpha = typeof alpha === 'undefined' ? 1.0 : alpha
+        ;
+
+        ctx.save();
+
+        ctx.translate(position[0], position[1]);
+        ctx.rotate(entity._components['rotation'] || 0);
+        ctx.scale(scale, scale);
+        ctx.globalAlpha = alpha;
+
+        if (image) {
+            ctx.drawImage(
+                image,
+                0, 0
+            )
+        } else {
+            ctx.fillStyle = colorStyle(color);
+            ctx.fillRect(-10/2, -10/2, 10, 10);
+        }
+
+        ctx.restore();
+    }
+
+    // Cleanup
     var ctx = this.get('viewport').get('ctx');
     ctx.restore();
+
+    var renderer = this;
+    setTimeout(function() {
+        renderer.renderFrame();
+    }, 40);
 };
+
 Rendered.prototype.prepareScene = function(scene) {
     var entity, image, image_src
     ,   images_loading = 0
