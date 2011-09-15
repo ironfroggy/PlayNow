@@ -6,10 +6,12 @@
     };
 
     now.type = function(name, params) {
+        var inherit = params.inherit || Object;
+
         constructor = function() {
             params.init.apply(this, arguments);
         };
-        constructor.prototype = new params.inherit();
+        constructor.prototype = new inherit();
         constructor.prototype.constructor = constructor
         constructor.__name__ = name;
         constructor.toString = function() {

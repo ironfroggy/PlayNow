@@ -40,6 +40,7 @@ var now;
                 script_dir + "playnow.vector.js",
                 script_dir + "playnow.event.js",
                 script_dir + "playnow.entity.js",
+                script_dir + "playnow.interaction.js",
                 script_dir + "playnow.renderer.js",
                 script_dir + "playnow.viewport.js",
                 script_dir + "playnow.behavior.js",

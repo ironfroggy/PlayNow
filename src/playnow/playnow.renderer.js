@@ -5,18 +5,19 @@ function Rendered(viewport) {
 }
 Rendered.prototype = new Behavior('position');
 Rendered.prototype.onentitytick = function(e, t, entity) {
-    var position = entity.get('position')
-    ,   color = entity.get('color')
-    ,   image = entity.get('image')
-    ,   scale = entity.get('scale', 1.0)
-    ,   alpha = entity.get('alpha', 1.0)
-    ,   ctx = this.get('viewport').get('ctx')
+    var position = entity._components['position']
+    ,   color = entity._components['color']
+    ,   image = entity._components['image']
+    ,   scale = entity._components['scale'] || 1.0
+    ,   alpha = entity._components['alpha']
+    ,   alpha = typeof alpha === 'undefined' ? 1.0 : alpha
+    ,   ctx = this._components['viewport']._components['ctx']
     ;
 
     ctx.save();
 
     ctx.translate(position[0], position[1]);
-    ctx.rotate(entity.get('rotation', 0));
+    ctx.rotate(entity._components['rotation'] || 0);
     ctx.scale(scale, scale);
     ctx.globalAlpha = alpha;
 

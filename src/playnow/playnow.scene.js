@@ -45,7 +45,7 @@ Scene.prototype.run = function() {
             self.trigger('tick', t);
             lts = nts;
 
-            setTimeout(step, 1000/60);
+            setTimeout(step, 1000/30);
         }
     }
 
@@ -72,11 +72,11 @@ Scene.prototype.ontick = function(e, t) {
     this.trigger('beforetick');
     for (var bi=0; bi < this.behaviors.length; bi++) {
         var behavior = this.behaviors[bi];
-        behavior.trigger('beforetick');
+        //behavior.trigger('beforetick');
         for (var ei=0; ei < behavior.entities.length; ei++) {
             behavior.trigger('tickentity', t, behavior.entities[ei]);
         }
-        behavior.trigger('aftertick');
+        //behavior.trigger('aftertick');
     }
 
     for (var ei=0; ei < this.entities.length; ei++) {
