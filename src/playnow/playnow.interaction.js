@@ -1,8 +1,6 @@
 var MouseMap = now.type('MouseMap', {
     inherit: Entity,
     init: function() {
-        Entity.apply(this, arguments);
-
         this.__mousemap_targets = [];
         this.__mousemap_lock = null;
     },

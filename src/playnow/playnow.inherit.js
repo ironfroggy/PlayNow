@@ -9,6 +9,7 @@
         var inherit = params.inherit || Object;
 
         constructor = function() {
+            inherit.apply(this, arguments);
             params.init.apply(this, arguments);
         };
         constructor.prototype = new inherit();
