@@ -31,6 +31,15 @@ var now;
                     now._load_callbacks.pop()(now);
                 }
             }
+        ,   load: function(scripts, complete) {
+                now.onload(function(){
+                    yepnope({
+                        test: true
+                    ,   yep: scripts
+                    ,   complete: complete
+                    });
+                });
+            }
         };
 
         yepnope({

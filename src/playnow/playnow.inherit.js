@@ -24,6 +24,7 @@
         for (param in params) {
             constructor.prototype[param] = params[param];
         }
+        constructor.prototype.upcall = inherit;
         return constructor;
     };
 })(now);
