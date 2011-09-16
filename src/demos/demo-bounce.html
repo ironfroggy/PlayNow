@@ -12,7 +12,9 @@
                 function BouncingBallScene(R, D) {
                     var dot, color;
 
-                    this.add(momentum, gravity, bounds);
+                    this.add(new Momentum());
+                    this.add(new Force(new V(0, 9.8)));
+                    this.add(new Bounds());
                     for (var i=0; i<D; i++) {
                         color = [Math.random(), Math.random(), Math.random(), Math.random()];
                         dot = new Entity({
@@ -23,7 +25,7 @@
                         ,   'rotation': Math.random() * Math.PI / 100
                         ,   'rotation-velocity': Math.random() * Math.PI - Math.PI/2 / 100
                         ,   'color': color 
-                        ,   'scale': 0.5 + Math.random() * 2
+                        ,   'scale': 0.2 + Math.random()
                         });
                         this.add(dot);
                     }
@@ -33,7 +35,7 @@
                 BouncingBallScene.prototype = new Scene();
 
                 var viewport = new ViewPort('c');
-                var scene = new BouncingBallScene(500, 500);
+                var scene = new BouncingBallScene(200, 1500);
                 viewport.set('scene', scene);
             });
         </script>
