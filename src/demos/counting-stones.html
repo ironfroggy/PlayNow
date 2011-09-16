@@ -14,8 +14,6 @@
                 var Smiley = now.type('Smiley', {
                     inherit: Entity,
                     init: function() {
-                        Entity.apply(this, arguments);
-
                         this.dragging = false;
 
                         this.bind('mouse.drag', function(e, pos, lastpos) {
