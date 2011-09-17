@@ -1,5 +1,9 @@
 var Smiley = now.type('Smiley', {
     inherit: Entity,
+    defaults: {
+        dragging: false
+    ,   image: "/src/smiley.png"
+    },
     init: function() {
         Entity.apply(this, arguments);
         this.dragging = false;
@@ -57,7 +61,6 @@ function MenuScene() {
         entity = new Smiley({
             position: position
         ,   mousebounds: new R(position.x, position.y, 100, 100)
-        ,   image: "/src/smiley.png"
         });
         mousemap.addTarget(entity);
         this.add(entity);

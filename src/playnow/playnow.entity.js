@@ -3,6 +3,9 @@ function Entity(data) {
     this._propagation = {};
     
     this.update(data);
+    if (typeof this.defaults === 'object') {
+        this.update(this.defaults);
+    }
 }
 Entity.prototype = new EventHandling();
 Entity.prototype.constructor = Entity;
