@@ -4,7 +4,15 @@ function Behavior(in_components) {
 }
 Behavior.prototype = new Entity();
 Behavior.prototype.addEntity= function(entity) {
+    var component_names = entity.getComponentNames();
+    for (var i=0; i < this.in_components.length; i++) {
+        var cname = this.in_components[i];
+        if (component_names.indexOf(cname) === -1) {
+            return false;
+        }
+    }
     this.entities.push(entity);
+    return true;
 };
 Behavior.prototype.ontickentity = function(e, t, entity) {
     var component_names = entity.getComponentNames();

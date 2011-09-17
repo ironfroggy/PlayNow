@@ -1,16 +1,18 @@
 var MouseMap = now.type('MouseMap', {
     inherit: Behavior,
     init: function() {
-        Behavior.apply(this, arguments);
-        this.__mousemap_targets = [];
+        Behavior.apply(this, ['mousebounds']);
         this.__mousemap_lock = null;
     },
     addEntity: function(target) {
-        this.__mousemap_targets.push(target);
-        target.bind('setposition', function(e, pos) {
-            var bounds = target.get('mousebounds');
-            target.set('mousebounds', new R(pos.x, pos.y, bounds.w, bounds.h));
-        });
+        var added = Behavior.addEntity.apply(this, arguments);
+        if (added) {
+            target.bind('setposition', function(e, pos) {
+                var bounds = target.get('mousebounds');
+                target.set('mousebounds', new R(pos.x, pos.y, bounds.w, bounds.h));
+            });
+        }
+        return added;
     },
     onaddedtoscene: function(e, scene) {
         scene.set('mousemap', this);
@@ -19,8 +21,8 @@ var MouseMap = now.type('MouseMap', {
     onmouse: function(e, event_pos) {
         var self = this
         ,   i = 0
-        ,   l = this.__mousemap_targets.length
-        ,   targets = this.__mousemap_targets
+        ,   l = this.entities.length
+        ,   targets = this.entities
         ,   entity
         ,   entity_pos
         ,   args = arguments;
