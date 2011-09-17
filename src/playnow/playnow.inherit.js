@@ -9,7 +9,11 @@
         var inherit = params.inherit || Object;
 
         constructor = function() {
-            params.init.apply(this, arguments);
+            if (typeof params.init === 'function') {
+                params.init.apply(this, arguments);
+            } else {
+                inherit.apply(this, arguments);
+            }
         };
         constructor.prototype = new inherit();
         constructor.prototype.constructor = constructor

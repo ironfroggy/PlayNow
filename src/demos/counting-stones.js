@@ -4,33 +4,28 @@ var Smiley = now.type('Smiley', {
         dragging: false
     ,   image: "/src/smiley.png"
     },
-    init: function() {
-        Entity.apply(this, arguments);
-        this.dragging = false;
+    'onmouse.drag': function(e, pos, lastpos) {
+        var curpos = this.get('position')
+        ,   offset = pos.subtract(lastpos)
+        ,   relpos = pos.subtract(curpos)
+        ;
+        
+        this.dragging = true;
 
-        this.bind('mouse.drag', function(e, pos, lastpos) {
-            var curpos = this.get('position')
-            ,   offset = pos.subtract(lastpos)
-            ,   relpos = pos.subtract(curpos)
-            ;
-            
-            this.dragging = true;
+        if (!e.mouselocked &&
+            this.get('imagectx').getImageData(pos.x-curpos.x, pos.y-curpos.y, 1, 1).data[3] === 0) {
 
-            if (!e.mouselocked &&
-                this.get('imagectx').getImageData(pos.x-curpos.x, pos.y-curpos.y, 1, 1).data[3] === 0) {
-
-                e.mousemissed = true;
-                e.mouserelease(this);
-            } else {
-                this.set('position', curpos.add(offset));
-                if (!e.mouselocked) {
-                    e.mouselock(this);
-                }
-            }
-        });
-        this.bind('mouse.up', function(e) {
+            e.mousemissed = true;
             e.mouserelease(this);
-        });
+        } else {
+            this.set('position', curpos.add(offset));
+            if (!e.mouselocked) {
+                e.mouselock(this);
+            }
+        }
+    },
+    'onmouse.up': function(e) {
+        e.mouserelease(this);
     },
     'onmouse.lock.acquire': function(e) {
         this.set('alpha', 0.65);

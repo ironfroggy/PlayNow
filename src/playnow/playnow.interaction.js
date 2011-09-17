@@ -5,7 +5,7 @@ var MouseMap = now.type('MouseMap', {
         this.__mousemap_lock = null;
     },
     addEntity: function(target) {
-        var added = Behavior.addEntity.apply(this, arguments);
+        var added = Behavior.prototype.addEntity.apply(this, arguments);
         if (added) {
             target.bind('setposition', function(e, pos) {
                 var bounds = target.get('mousebounds');
