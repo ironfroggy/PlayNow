@@ -1,7 +1,7 @@
 var now;
 
 (function(){
-    var my_src, script_dir, scripts, i;
+    var my_src, script_dir, scripts, i, pn_scripts;
 
     if (typeof now === 'undefined') {
         scripts = document.getElementsByTagName('script');
@@ -12,6 +12,17 @@ var now;
             }
         }
         script_dir = my_src.replace('playnow.js', '');
+        pn_scripts = [
+            script_dir + "playnow.inherit.js",
+            script_dir + "playnow.vector.js",
+            script_dir + "playnow.event.js",
+            script_dir + "playnow.entity.js",
+            script_dir + "playnow.interaction.js",
+            script_dir + "playnow.renderer.js",
+            script_dir + "playnow.viewport.js",
+            script_dir + "playnow.behavior.js",
+            script_dir + "playnow.scene.js",
+        ];
 
         now = {
             _loaded: false
@@ -32,32 +43,20 @@ var now;
                 }
             }
         ,   load: function(scripts, complete) {
-                now.onload(function(){
-                    yepnope({
-                        test: true
-                    ,   yep: scripts
-                    ,   complete: complete
-                    });
+                var load_scripts = [];
+                load_scripts.push.apply(load_scripts, pn_scripts);
+                load_scripts.push.apply(load_scripts, scripts);
+
+                console.log(load_scripts);
+                yepnope({
+                    test: true,
+                    yep: load_scripts,
+                    complete: function() {
+                        now._set_loaded();
+                        complete();
+                    }
                 });
             }
         };
-
-        yepnope({
-            test: true,
-            yep: [
-                script_dir + "playnow.inherit.js",
-                script_dir + "playnow.vector.js",
-                script_dir + "playnow.event.js",
-                script_dir + "playnow.entity.js",
-                script_dir + "playnow.interaction.js",
-                script_dir + "playnow.renderer.js",
-                script_dir + "playnow.viewport.js",
-                script_dir + "playnow.behavior.js",
-                script_dir + "playnow.scene.js",
-            ],
-            complete: function() {
-                now._set_loaded();
-            }
-        });
     }
 })();
