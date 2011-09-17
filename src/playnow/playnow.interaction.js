@@ -1,15 +1,20 @@
 var MouseMap = now.type('MouseMap', {
-    inherit: Entity,
+    inherit: Behavior,
     init: function() {
+        Behavior.apply(this, arguments);
         this.__mousemap_targets = [];
         this.__mousemap_lock = null;
     },
-    addTarget: function(target) {
+    addEntity: function(target) {
         this.__mousemap_targets.push(target);
         target.bind('setposition', function(e, pos) {
             var bounds = target.get('mousebounds');
             target.set('mousebounds', new R(pos.x, pos.y, bounds.w, bounds.h));
         });
+    },
+    onaddedtoscene: function(e, scene) {
+        scene.set('mousemap', this);
+        scene.propagate('mouse', 'mousemap');
     },
     onmouse: function(e, event_pos) {
         var self = this

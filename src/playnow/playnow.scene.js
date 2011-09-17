@@ -11,9 +11,11 @@ Scene.prototype.add = function() {
         c = arguments[i];
         if (c instanceof Behavior) {
             this.behaviors.push(c);
+            c.trigger('addedtoscene', this);
         } else if (c instanceof Entity) {
             this.entities.push(c);
             this._addEntityToBehaviors(c);
+            c.trigger('addedtoscene', this);
         } else {
             throw "Cannot add unknown type to scene";
         }

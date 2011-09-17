@@ -41,6 +41,10 @@ Rendered.prototype.renderFrame = function() {
         ,   alpha = typeof alpha === 'undefined' ? 1.0 : alpha
         ;
 
+        if (typeof position === 'undefined') {
+            continue;
+        }
+
         ctx.save();
 
         ctx.translate(position[0], position[1]);

@@ -53,8 +53,7 @@ function MenuScene() {
     this.set('clearEachFrame', [1, 1, 0.7, 1]);
 
     mousemap = new MouseMap();
-    this.set('mousemap', mousemap);
-    this.propagate('mouse', 'mousemap');
+    this.add(mousemap);
 
     for (i=0; i<10; i+=1) {
         position = new V(Math.random() * 640, Math.random() * 480)
@@ -62,7 +61,6 @@ function MenuScene() {
             position: position
         ,   mousebounds: new R(position.x, position.y, 100, 100)
         });
-        mousemap.addTarget(entity);
         this.add(entity);
     }
 }

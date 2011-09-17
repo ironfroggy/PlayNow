@@ -50,26 +50,3 @@ Entity.prototype.propagate = function(eventname, component, before) {
     });
 };
 
-function Behavior(in_components) {
-    this.in_components = in_components.split(' ');
-    this.entities = [];
-}
-Behavior.prototype = new Entity();
-Behavior.prototype.addEntity= function(entity) {
-    this.entities.push(entity);
-};
-Behavior.prototype.ontickentity = function(e, t, entity) {
-    var component_names = entity.getComponentNames();
-    for (var i=0; i < this.in_components.length; i++) {
-        var cname = this.in_components[i];
-        if (component_names.indexOf(cname) === -1) {
-            return null;
-        }
-    }
-
-    var data = this.trigger('entitytick', t, entity, update);
-    function update(data) {
-        entity.update(data);
-    }
-}
-
