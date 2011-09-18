@@ -15,7 +15,7 @@ Entity.prototype.get = function(name, def) {
 Entity.prototype.set = function(name, data) {
     var previous_value = this._components[name];
     this._components[name] = data;
-    if (this.trigger('set', name, data) === false || this.trigger('set'+name, data) === false) {
+    if (this.trigger('set'+name, data, previous_value) === false) {
         this._components[name] = previous_value;
     }
     if (data instanceof EventHandling) {

@@ -2,6 +2,7 @@ function Rendered(viewport) {
     this.set('viewport', viewport);
 
     this._images = {};
+    this._first = true;
 }
 Rendered.prototype = new Behavior('position');
 
@@ -19,27 +20,40 @@ Rendered.prototype.renderFrame = function() {
     if (background_color && background_color.length === 3) {
         background_color.push(scene._components['clearEachFrameTranslucent'] || 0.3);
     }
+    ctx.fillStyle = colorStyle(background_color);
 
-    if (background_color) {
+    if (this._first && background_color) {
         ctx.save();
 
         ctx.scale(zoom, zoom);
         ctx.translate(offset_x, offset_y);
 
-        ctx.fillStyle = colorStyle(background_color);
         ctx.fillRect(-100, -100, 840, 680);
+    } else {
+        for (var i=0,l=scene.entities.length; i<l; i++) {
+            var entity = scene.entities[i];
+            var d = entity._dirty;
+            ctx.fillRect(d[0], d[1], d[2], d[3]);
+        }
     }
 
     // Entities
     for (var i=0,l=scene.entities.length; i<l; i++) {
-        var entity = scene.entities[i]
-        ,   position = entity._components['position']
+        var entity = scene.entities[i];
+        if (!entity._dirty) {
+            continue
+        }
+
+        var
+            position = entity._components['position']
         ,   color = entity._components['color']
         ,   image = entity._components['image']
         ,   scale = entity._components['scale'] || 1.0
         ,   alpha = entity._components['alpha']
         ,   alpha = typeof alpha === 'undefined' ? 1.0 : alpha
         ;
+
+        entity._dirty = false;
 
         if (typeof position === 'undefined') {
             continue;
@@ -73,47 +87,69 @@ Rendered.prototype.renderFrame = function() {
     setTimeout(function() {
         renderer.renderFrame();
     }, now.renderRate);
+    this._first = false;
 };
 
-Rendered.prototype.prepareScene = function(scene) {
-    var entity, image, image_src
-    ,   images_loading = 0
-    ,   self = this
-    ;
-    this._image = {};
+(function() {
 
-    for (var i=0,l=scene.entities.length; i<l; i++) {
-        entity = scene.entities[i];
-        image_src = entity.get('image', null);
-        if (image_src !== null) {
-            if (typeof this._image[image_src] === 'undefined') {
-                images_loading += 1;
-                this._images[image_src] = new Image();
-                this._images[image_src].src = image_src;
-                this._images[image_src].for_entity = entity;
-                this._images[image_src].onload = function() {
-                    var canvas = document.createElement('canvas')
-                    ,   ctx = canvas.getContext('2d')
-                    ;
+    Rendered.prototype.prepareScene = function(scene) {
+        var entity, image, image_src
+        ,   images_loading = 0
+        ,   self = this
+        ;
+        this._image = {};
 
-                    ctx.drawImage(this, 0, 0);
-                    this.for_entity.set('image', canvas);
-                    this.for_entity.set('imagectx', ctx);
-
-                    images_loading -= 1;
-                    checkLoadingDone.call(this);
-                };
+        function mark_dirty(e, newpos, oldpos) {
+            if (this._dirty === false) {
+                this._dirty = new R(oldpos[0], oldpos[1], this._components.mousebounds.w, this._components.mousebounds.h);
+                var i, es=scene.entities, l=scene.entities.length, r=this._components['mousebounds'];
+                for (i=0; i<l; i++) {
+                    if (es[i] !== this && es[i]._components['mousebounds'].intersects(r)) {
+                        mark_dirty.call(es[i], e, es[i]._components.position, es[i]._components.position);
+                    }
+                }
             }
         }
-    }
-    checkLoadingDone.call(this);
 
-    function checkLoadingDone() {
-        if (images_loading === 0) {
-            self.trigger('ready');
+        for (var i=0,l=scene.entities.length; i<l; i++) {
+            entity = scene.entities[i];
+
+            entity.bind('setposition', mark_dirty);
+            entity.bind('setrotation', mark_dirty);
+            entity.bind('setalpha', mark_dirty);
+            entity._dirty = entity.get('mousebounds');
+
+            image_src = entity.get('image', null);
+            if (image_src !== null) {
+                if (typeof this._image[image_src] === 'undefined') {
+                    images_loading += 1;
+                    this._images[image_src] = new Image();
+                    this._images[image_src].src = image_src;
+                    this._images[image_src].for_entity = entity;
+                    this._images[image_src].onload = function() {
+                        var canvas = document.createElement('canvas')
+                        ,   ctx = canvas.getContext('2d')
+                        ;
+
+                        ctx.drawImage(this, 0, 0);
+                        this.for_entity.set('image', canvas);
+                        this.for_entity.set('imagectx', ctx);
+
+                        images_loading -= 1;
+                        checkLoadingDone.call(this);
+                    };
+                }
+            }
         }
-    }
-};
+        checkLoadingDone.call(this);
+
+        function checkLoadingDone() {
+            if (images_loading === 0) {
+                self.trigger('ready');
+            }
+        }
+    };
+})();
 
 // render utilities
 function colorStyle(color) {
