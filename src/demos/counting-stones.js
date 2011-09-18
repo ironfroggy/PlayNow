@@ -1,5 +1,6 @@
 var Draggable = now.type('Draggable', {
     inherit: Behavior
+,   watch: ['mouse']
 ,   init: function() {
         Behavior.apply(this, ['mousebounds']);
     }

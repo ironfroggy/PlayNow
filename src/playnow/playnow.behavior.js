@@ -4,6 +4,7 @@ function Behavior(in_components) {
 }
 Behavior.prototype = new Entity();
 Behavior.prototype.addEntity= function(entity) {
+    var i;
     var behavior = this;
     var component_names = entity.getComponentNames();
     for (var i=0; i < this.in_components.length; i++) {
@@ -13,11 +14,15 @@ Behavior.prototype.addEntity= function(entity) {
         }
     }
     this.entities.push(entity);
-    entity.bind('', function() {
-        Array.prototype.splice.call(arguments, 1, 0, behavior);
-        arguments[0] = new Event('entity.' + arguments[0].name);
-        behavior.trigger.apply(behavior, arguments);
-    });
+    if (typeof this.watch !== 'undefined') {
+        for (i=0; i < this.watch.length; i++) {
+            entity.bind(this.watch[i], function() {
+                Array.prototype.splice.call(arguments, 1, 0, behavior);
+                arguments[0] = new Event('entity.' + arguments[0].name);
+                behavior.trigger.apply(behavior, arguments);
+            });
+        }
+    }
     return true;
 };
 Behavior.prototype.ontickentity = function(e, t, entity) {
