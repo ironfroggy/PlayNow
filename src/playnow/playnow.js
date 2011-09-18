@@ -56,6 +56,8 @@ var now;
                     }
                 });
             }
+        ,   renderRate: 50
+        ,   sceneRate: 50
         };
     }
 })();

@@ -47,7 +47,7 @@ Scene.prototype.run = function() {
             self.trigger('tick', t);
             lts = nts;
 
-            setTimeout(step, 1000/30);
+            setTimeout(step, now.sceneRate);
         }
     }
 

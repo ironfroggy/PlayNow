@@ -72,7 +72,7 @@ Rendered.prototype.renderFrame = function() {
     var renderer = this;
     setTimeout(function() {
         renderer.renderFrame();
-    }, 40);
+    }, now.renderRate);
 };
 
 Rendered.prototype.prepareScene = function(scene) {

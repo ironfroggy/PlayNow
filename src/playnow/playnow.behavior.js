@@ -17,7 +17,6 @@ Behavior.prototype.addEntity= function(entity) {
     if (typeof this.watch !== 'undefined') {
         for (i=0; i < this.watch.length; i++) {
             entity.bind(this.watch[i], function(e) {
-                console.log("!");
                 var original = e.name;
                 Array.prototype.splice.call(arguments, 1, 0, entity);
                 e.name = 'entity.' + e.name;
@@ -89,16 +88,17 @@ var Bounds = now.type('Bounds', {
 
             if (p[1] > 480 || p[1] < 0) {
                 dy = p[1] > 480 ? p[1] - 480 : p[1];
-                v = new V(v[0]*FRICTION, -v[1]*ENERGY_LOSS);
+                v[0]=v.x = v[0]*FRICTION;
+                v[1]=v.y = -v[1]*ENERGY_LOSS;
             }
             if (p[0] > 640 || p[0] < 0) {
                 dx = p[0] > 640 ? p[0] - 640 : p[0];
-                v = new V(-v[0]*ENERGY_LOSS, v[1]*FRICTION);
+                v[0]=v.x = -v[0]*ENERGY_LOSS;
+                v[1]=v.y = v[1]*FRICTION;
             }
 
-            p = new V(p[0] - dx, p[1] - dy);
-            entity._components['position'] = p;
-            entity._components['velocity'] = v;
+            p[0]=p.x = p[0] - dx;
+            p[1]=p.y = p[1] - dy;
         }
     }
 });
