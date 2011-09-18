@@ -16,10 +16,12 @@ Behavior.prototype.addEntity= function(entity) {
     this.entities.push(entity);
     if (typeof this.watch !== 'undefined') {
         for (i=0; i < this.watch.length; i++) {
-            entity.bind(this.watch[i], function() {
-                Array.prototype.splice.call(arguments, 1, 0, behavior);
-                arguments[0] = new Event('entity.' + arguments[0].name);
+            entity.bind(this.watch[i], function(e) {
+                var original = e.name;
+                Array.prototype.splice.call(arguments, 1, 0, entity);
+                e.name = 'entity.' + e.name;
                 behavior.trigger.apply(behavior, arguments);
+                e.name = original;
             });
         }
     }
