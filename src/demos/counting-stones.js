@@ -1,3 +1,12 @@
+var Draggable = now.type('Draggable', {
+    inherit: Behavior
+,   init: function() {
+        Behavior.apply(this, ['mousebounds']);
+    }
+,   'onentity.mouse.drag': function(e, entity, pos, lastpos) {
+    }
+})
+
 var Smiley = now.type('Smiley', {
     inherit: Entity,
     defaults: {
@@ -49,6 +58,7 @@ function MenuScene(n) {
 
     mousemap = new MouseMap();
     this.add(mousemap);
+    this.add(new Draggable());
 
     for (i=0; i<n; i+=1) {
         position = new V(Math.random() * 640, Math.random() * 480)
