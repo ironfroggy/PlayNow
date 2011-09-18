@@ -70,8 +70,12 @@ EventHandling.prototype.trigger = function (e) {
         }
     }
 
-    for (var i=1, l=event_name_parts.length; i<=l; i++) {
-        trigger_specific.call(this, event_name_parts.slice(0, i).join('.'));
+    l = event_name_parts.length;
+    trigger_specific.call(this, '');
+    if (eventname !== '') {
+        for (var i=1; i<=l; i++) {
+            trigger_specific.call(this, event_name_parts.slice(0, i).join('.'));
+        }
     }
 
     function trigger_specific(specific_eventname) {
