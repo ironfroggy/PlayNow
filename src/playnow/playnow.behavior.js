@@ -17,6 +17,7 @@ Behavior.prototype.addEntity= function(entity) {
     if (typeof this.watch !== 'undefined') {
         for (i=0; i < this.watch.length; i++) {
             entity.bind(this.watch[i], function(e) {
+                console.log("!");
                 var original = e.name;
                 Array.prototype.splice.call(arguments, 1, 0, entity);
                 e.name = 'entity.' + e.name;
@@ -57,10 +58,10 @@ var Momentum = now.type('Momentum', {
 
             v[0] = Math.abs(v[0]) < 1 ? 0 : v[0];
             v[1] = Math.abs(v[1]) < 1 ? 0 : v[1];
-            entity.set('position', entity.get('position').add(v.multiply(t)))
+            entity._components['position'] = entity.get('position').add(v.multiply(t))
 
             if (!!rv) {
-                entity.set('rotation', (r+rv)%Math.PI);
+                entity._components['rotation'] = (r+rv)%Math.PI;
             }
         }
     }
@@ -96,8 +97,8 @@ var Bounds = now.type('Bounds', {
             }
 
             p = new V(p[0] - dx, p[1] - dy);
-            entity.set('position', p);
-            entity.set('velocity', v);
+            entity._components['position'] = p;
+            entity._components['velocity'] = v;
         }
     }
 });
@@ -114,7 +115,7 @@ var Force;
             var i, l, entity;
             for (i=0, l=this.entities.length; i<l; i+=1) {  
                 entity = this.entities[i];
-                entity.set('velocity', entity.get('velocity').add(this.G))
+                entity._components['velocity'] = entity._components['velocity'].add(this.G);
             }
         }
     });

@@ -7,17 +7,17 @@ Rendered.prototype = new Behavior('position');
 
 Rendered.prototype.renderFrame = function() {
     // Before entities
-    var viewport = this.get('viewport')
-    ,   scene = viewport.get('scene')
-    ,   ctx = viewport.get('ctx')
-    ,   zoom = viewport.get('zoom')
-    ,   offset_x = viewport.get('x')
-    ,   offset_y = viewport.get('y')
-    ,   background_color = scene.get('clearEachFrame', false) || [1,1,1]
+    var viewport = this._components['viewport']
+    ,   scene = viewport._components['scene']
+    ,   ctx = viewport._components['ctx']
+    ,   zoom = viewport._components['zoom']
+    ,   offset_x = viewport._components['x']
+    ,   offset_y = viewport._components['y']
+    ,   background_color = scene._components['clearEachFrame'] || [1, 1, 1]
     ;
 
     if (background_color && background_color.length === 3) {
-        background_color.push(scene.get('clearEachFrameTranslucent', 0.3));
+        background_color.push(scene._components['clearEachFrameTranslucent'] || 0.3);
     }
 
     if (background_color) {
