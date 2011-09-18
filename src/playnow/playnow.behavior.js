@@ -27,19 +27,8 @@ Behavior.prototype.addEntity= function(entity) {
     }
     return true;
 };
-Behavior.prototype.ontickentity = function(e, t, entity) {
-    var component_names = entity.getComponentNames();
-    for (var i=0; i < this.in_components.length; i++) {
-        var cname = this.in_components[i];
-        if (component_names.indexOf(cname) === -1) {
-            return null;
-        }
-    }
+Behavior.prototype.tick = function() {
 
-    var data = this.trigger('entitytick', t, entity, update);
-    function update(data) {
-        entity.update(data);
-    }
 }
 
 var Momentum = now.type('Momentum', {
