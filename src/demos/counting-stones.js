@@ -42,7 +42,7 @@ var Smiley = now.type('Smiley', {
 });
 
 MenuScene.prototype = new Scene();
-function MenuScene() {
+function MenuScene(n) {
     var i, entity, mousemap, position;
 
     this.set('clearEachFrame', [1, 1, 0.7, 1]);
@@ -50,7 +50,7 @@ function MenuScene() {
     mousemap = new MouseMap();
     this.add(mousemap);
 
-    for (i=0; i<10; i+=1) {
+    for (i=0; i<n; i+=1) {
         position = new V(Math.random() * 640, Math.random() * 480)
         entity = new Smiley({
             position: position
