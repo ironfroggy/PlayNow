@@ -33,7 +33,9 @@ Rendered.prototype.renderFrame = function() {
         for (var i=0,l=scene.entities.length; i<l; i++) {
             var entity = scene.entities[i];
             var d = entity._dirty;
-            ctx.fillRect(d[0], d[1], d[2], d[3]);
+            if (d) {
+                ctx.fillRect(d[0], d[1], d[2], d[3]);
+            }
         }
     }
 

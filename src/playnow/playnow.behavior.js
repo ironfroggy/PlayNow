@@ -51,6 +51,9 @@ var Momentum = now.type('Momentum', {
             if (!!rv) {
                 entity._components['rotation'] = (r+rv)%Math.PI;
             }
+            
+            var p = entity.get('position');
+            entity._dirty = new R(p[0]-20, p[1]-20, 40, 40);
         }
     }
 });
