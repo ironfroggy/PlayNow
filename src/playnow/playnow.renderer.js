@@ -120,9 +120,7 @@ Rendered.prototype.renderFrame = function() {
         for (var i=0,l=scene.entities.length; i<l; i++) {
             entity = scene.entities[i];
 
-            entity.bind('setposition', mark_dirty);
-            entity.bind('setrotation', mark_dirty);
-            entity.bind('setalpha', mark_dirty);
+            entity.bind('setposition setrotation setalpha', mark_dirty);
             entity._dirty = entity.get('mousebounds');
             entity.set('z', i);
 
