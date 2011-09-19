@@ -26,12 +26,11 @@ Rendered.prototype.renderFrame = function() {
         return a._components.z - b._components.z;
     });
 
+    ctx.save();
+    ctx.scale(zoom, zoom);
+    ctx.translate(offset_x, offset_y);
+
     if (this._first && background_color) {
-        ctx.save();
-
-        ctx.scale(zoom, zoom);
-        ctx.translate(offset_x, offset_y);
-
         ctx.fillRect(-100, -100, 840, 680);
     } else {
         for (var i=0,l=scene.entities.length; i<l; i++) {
