@@ -12,7 +12,7 @@ var Draggable = now.type('Draggable', {
 ,   'onentity.mouse.lock.acquire': function(e, entity) {
         entity.set('alpha', 0.65);
         for (var i=0; i<this.entities.length; i++) {
-            this.entities[i].set('z', entity.get('z') - 1);
+            this.entities[i].set('z', this.entities[i].get('z') - 1);
         }
         entity.set('z', this.entities.length);
     }
