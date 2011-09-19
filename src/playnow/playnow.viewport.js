@@ -43,6 +43,26 @@ function ViewPort(canvas_id) {
                     }
                     fromcoord = new V(e.clientX, e.clientY);
                 }
+            } else if (mevent === 'mousewheel') {
+                function onmousewheel(e) {
+                    var delta = 0;
+                    if (e.wheelDelta) {
+                        delta = e.wheelDelta / 120;
+                    } else if (e.detail) {
+                        delta = -e.detail / 3;
+                    }
+                    if (e.preventDefault) {
+                        e.preventDefault();
+                    }
+                    e.returnValue = false;
+
+                    viewport.trigger(mevents[mevent], new V(e.clientX, e.clientY), delta);
+                }
+                if (window.addEventListener) {
+                    window.addEventListener('DOMMouseScroll', onmousewheel, false);
+                } else {
+                    // ???
+                }
             } else {
                 this.get('canvas')['on' + mevent] = function(e) {
                     if (mevent === 'mousedown') {

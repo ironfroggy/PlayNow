@@ -49,6 +49,9 @@ var Smiley = now.type('Smiley', {
         dragging: false
     ,   image: "/src/smiley.png"
     },
+    'onmouse.wheel': function(e, pos, delta) {
+        console.error(delta);
+    }
 });
 
 MenuScene.prototype = new Scene();
