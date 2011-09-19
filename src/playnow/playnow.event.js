@@ -67,6 +67,7 @@ EventHandling.prototype.trigger = function (e) {
     ,   eventname = e instanceof Event ? e.name : e
     ,   event_name_parts = eventname.split(".")
     ,   e = e instanceof Event ? e : new Event(e)
+    ,   i, l
     ;
     args.unshift(e);
 
@@ -81,14 +82,15 @@ EventHandling.prototype.trigger = function (e) {
     l = event_name_parts.length;
     trigger_specific.call(this, '');
     if (eventname !== '') {
-        for (var i=1; i<=l; i++) {
+        for (i=1; i<=l; i++) {
             trigger_specific.call(this, event_name_parts.slice(0, i).join('.'));
         }
     }
 
     function trigger_specific(specific_eventname) {
+        var i, l;
         if (typeof this.__event_handlers !== 'undefined' && typeof this.__event_handlers[specific_eventname] !== 'undefined') {
-            for (var i=0,l=this.__event_handlers[specific_eventname].length; i<l; i++) {
+            for (i=0,l=this.__event_handlers[specific_eventname].length; i<l; i++) {
                 this.__event_handlers[specific_eventname][i].apply(this, args);
             }
         }
