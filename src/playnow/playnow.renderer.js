@@ -22,6 +22,10 @@ Rendered.prototype.renderFrame = function() {
     }
     ctx.fillStyle = colorStyle(background_color);
 
+    scene.entities.sort(function(a, b) {
+        return a._components.z - b._components.z;
+    });
+
     if (this._first && background_color) {
         ctx.save();
 
@@ -120,6 +124,7 @@ Rendered.prototype.renderFrame = function() {
             entity.bind('setrotation', mark_dirty);
             entity.bind('setalpha', mark_dirty);
             entity._dirty = entity.get('mousebounds');
+            entity.set('z', i);
 
             image_src = entity.get('image', null);
             if (image_src !== null) {
