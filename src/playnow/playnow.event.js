@@ -7,24 +7,32 @@ Event.prototype.toString = function() {
 
 function EventHandling() {}
 
-EventHandling.prototype.bind = function(eventname, callback) {
+EventHandling.prototype.bind = function(eventnames, callback) {
+    var i, l=eventnames.length, eventname;
+    if (typeof eventnames === 'string') {
+        eventnames = eventnames.split(' ');
+    }
+
     if (typeof this.__event_handlers === 'undefined') {
         this.__event_handlers = {};
     }
-    if (typeof this.__event_handlers[eventname] === 'undefined') {
-        this.__event_handlers[eventname] = [];
-    }
 
-
-    if (typeof this.__event_flags !== 'undefined') {
-        if (this.__event_flags[eventname] instanceof Array) {
-            var args = Array.prototype.slice.call(arguments, 1, arguments.length);
-            args.unshift(eventname);
-            callback.apply(this, args);
-            return
+    for (i=0; i < l; i++) {
+        eventname = eventnames[i];
+        if (typeof this.__event_handlers[eventname] === 'undefined') {
+            this.__event_handlers[eventname] = [];
         }
+
+        if (typeof this.__event_flags !== 'undefined') {
+            if (this.__event_flags[eventname] instanceof Array) {
+                var args = Array.prototype.slice.call(arguments, 1, arguments.length);
+                args.unshift(eventname);
+                callback.apply(this, args);
+                return
+            }
+        }
+        this.__event_handlers[eventname].push(callback);
     }
-    this.__event_handlers[eventname].push(callback);
 }
 
 EventHandling.prototype.unbind = function(eventname, callback) {
