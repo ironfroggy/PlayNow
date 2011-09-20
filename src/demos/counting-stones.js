@@ -76,3 +76,7 @@ function MenuScene(n) {
         this.add(entity);
     }
 }
+MenuScene.prototype['onmouse.wheel'] = function(e, pos, delta) {
+    var zoom = scene.get('viewport').get('zoom');
+    scene.get('viewport').set('zoom', zoom + delta/100);
+};

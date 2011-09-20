@@ -1,8 +1,13 @@
 function Rendered(viewport) {
     this.set('viewport', viewport);
+    
+    var that = this;
+    viewport.bind('setzoom', function() {
+        that._allDirty = true;
+    });
 
     this._images = {};
-    this._first = true;
+    this._allDirty = true;
 }
 Rendered.prototype = new Behavior('position');
 
@@ -30,7 +35,7 @@ Rendered.prototype.renderFrame = function() {
     ctx.scale(zoom, zoom);
     ctx.translate(offset_x, offset_y);
 
-    if (this._first && background_color) {
+    if (this._allDirty && background_color) {
         ctx.fillRect(-100, -100, 840, 680);
     } else {
         for (var i=0,l=scene.entities.length; i<l; i++) {
@@ -45,7 +50,7 @@ Rendered.prototype.renderFrame = function() {
     // Entities
     for (var i=0,l=scene.entities.length; i<l; i++) {
         var entity = scene.entities[i];
-        if (!entity._dirty) {
+        if (!entity._dirty && !this._allDirty) {
             continue
         }
 
@@ -92,7 +97,7 @@ Rendered.prototype.renderFrame = function() {
     setTimeout(function() {
         renderer.renderFrame();
     }, now.renderRate);
-    this._first = false;
+    this._allDirty = false;
 };
 
 (function() {

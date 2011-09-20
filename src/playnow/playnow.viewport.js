@@ -1,4 +1,5 @@
 function ViewPort(canvas_id) {
+    var that = this;
     this.set('canvas', document.getElementById(canvas_id));
     this.set('ctx', this.get('canvas').getContext('2d'));
     this.set('renderer', new Rendered(this));
@@ -31,17 +32,30 @@ function ViewPort(canvas_id) {
         }
     ;
 
+    function adjusted_coords(e) {
+        var coord
+        ,   offset_x = that.get('x')
+        ,   offset_y = that.get('y')
+        ,   zoom = that.get('zoom')
+        ;
+
+        return new V(
+            e.clientX/zoom + offset_x
+        ,   e.clientY/zoom + offset_y
+        )
+    }
+
     var fromcoord, isdown;
     for (var mevent in mevents) {
         (function(mevent){
             if (mevent === 'mousemove') {
                 this.get('canvas')['on' + mevent] = function(e) {
                     if (isdown) {
-                        viewport.trigger('mouse.drag', new V(e.clientX, e.clientY), fromcoord);
+                        viewport.trigger('mouse.drag', adjusted_coords(e), fromcoord);
                     } else {
-                        viewport.trigger(mevents[mevent], new V(e.clientX, e.clientY), fromcoord);
+                        viewport.trigger(mevents[mevent], adjusted_coords(e), fromcoord);
                     }
-                    fromcoord = new V(e.clientX, e.clientY);
+                    fromcoord = adjusted_coords(e);
                 }
             } else if (mevent === 'mousewheel') {
                 function onmousewheel(e) {
@@ -56,7 +70,7 @@ function ViewPort(canvas_id) {
                     }
                     e.returnValue = false;
 
-                    viewport.trigger(mevents[mevent], new V(e.clientX, e.clientY), delta);
+                    viewport.trigger(mevents[mevent], adjusted_coords(e), delta);
                 }
                 if (window.addEventListener) {
                     window.addEventListener('DOMMouseScroll', onmousewheel, false);
@@ -70,7 +84,7 @@ function ViewPort(canvas_id) {
                     } else if (mevent === 'mouseup') {
                         isdown = false;
                     }
-                    viewport.trigger(mevents[mevent], new V(e.clientX, e.clientY));
+                    viewport.trigger(mevents[mevent], adjusted_coords(e));
                 }
             }
         }).call(this, mevent);
