@@ -34,27 +34,28 @@ Scene.prototype.onsetasscene = function(e, object) {
 };
 
 Scene.prototype.run = function() {
-    var self = this
-    ,   lts = new Date()
-    ,   nts
-    ,   t
-    ;
-
-    function step() {
-        if (self.running) {
-            nts = (new Date);
-            t = (nts.getTime() - lts.getTime()) / 1000;
-            self.trigger('tick', t);
-            lts = nts;
-
-            setTimeout(step, now.sceneRate);
-        }
-    }
+    this.lts = new Date();
+    this.nts = null;
+    this.t = undefined;
 
     this.running = true;
     this.trigger('start');
-    step();
+    this.step();
 };
+Scene.prototype.step = function step() {
+    if (this.running) {
+        this.nts = (new Date);
+        this.t = (this.nts.getTime() - this.lts.getTime()) / 1000;
+        this.trigger('tick', this.t);
+        this.lts = this.nts;
+
+        var scene = this;
+        function do_step() {
+            scene.step();
+        }
+        setTimeout(do_step, now.sceneRate);
+    }
+}
 Scene.prototype.stop = function() {
     this.running = false;
     this.trigger('stop');
