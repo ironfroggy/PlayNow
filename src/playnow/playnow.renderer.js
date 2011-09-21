@@ -8,6 +8,8 @@ function Rendered(viewport) {
 
     this._images = {};
     this._allDirty = true;
+    this.total_time = 0;
+    this.lts = (new Date);
 }
 Rendered.prototype = new Behavior('position');
 
@@ -20,7 +22,14 @@ Rendered.prototype.renderFrame = function() {
     ,   offset_x = viewport._components['x']
     ,   offset_y = viewport._components['y']
     ,   background_color = scene._components['clearEachFrame'] || [1, 1, 1]
+    ,   delta
     ;
+
+    this.nts = (new Date);
+    delta = (this.nts.getTime() - this.lts.getTime()) / 1000;
+    this.total_time += delta;
+    this.trigger('tick', this.t);
+    this.lts = this.nts;
 
     if (background_color && background_color.length === 3) {
         background_color.push(scene._components['clearEachFrameTranslucent'] || 0.3);
@@ -51,13 +60,15 @@ Rendered.prototype.renderFrame = function() {
     for (var i=0,l=scene.entities.length; i<l; i++) {
         var entity = scene.entities[i];
         if (!entity._dirty && !this._allDirty) {
-            continue
+            //continue
         }
 
         var
             position = entity._components['position']
         ,   color = entity._components['color']
         ,   image = entity._components['image']
+        ,   sprite_size = entity._components['sprite-size']
+        ,   clip
         ,   scale = entity._components['scale'] || 1.0
         ,   alpha = entity._components['alpha']
         ,   alpha = typeof alpha === 'undefined' ? 1.0 : alpha
@@ -77,10 +88,24 @@ Rendered.prototype.renderFrame = function() {
         ctx.globalAlpha = alpha;
 
         if (image) {
-            ctx.drawImage(
-                image,
-                0, 0
-            )
+            if (sprite_size) {
+                clip = [
+                    parseInt(this.total_time * 10 % 4) * 30,
+                    0,
+                    sprite_size[0],
+                    sprite_size[1],
+                ];
+                ctx.drawImage(
+                    image,
+                    clip[0], clip[1], clip[2], clip[3],
+                    0, 0, clip[2], clip[3]
+                );
+            } else {
+                ctx.drawImage(
+                    image,
+                    0, 0
+                );
+            }
         } else {
             ctx.fillStyle = colorStyle(color);
             ctx.fillRect(-10/2, -10/2, 10, 10);

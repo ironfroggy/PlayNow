@@ -1,0 +1,33 @@
+<html>
+    <head>
+        <title>DEMO</title>
+    </head>
+    <body>
+        <canvas id=c width=640 height=480 />
+
+        <script type="text/javascript" src="../yepnope.1.0.2-min.js"></script>
+        <script type="text/javascript" src="../playnow/playnow.js"></script>
+        <script type="text/javascript">
+            var viewport, scene;
+
+            now.load(
+                ['counting-stones.js']
+            ,   function(){
+                    var coin, animation;
+
+                    viewport = new ViewPort('c');
+                    scene = new Scene();
+
+                    coin = new Entity();
+                    coin.set('position', new V(100, 100));
+                    coin.set('image', '../Coin_sprites.png');
+                    coin.set('sprite-size', new V(30, 30));
+
+                    scene.add(coin);
+
+                    viewport.set('scene', scene);
+                }
+            );
+        </script>
+    </body>
+</html>
