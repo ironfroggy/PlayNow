@@ -28,4 +28,26 @@
         })
     );
 
+    privates = (function(){
+        var key = 1;
+        function next_private_key() {
+            key += 1;
+            return key;
+        }
+        function privates(owner, obj) {
+            if (typeof owner.__privates === 'undefined') {
+                owner.__privates = {};
+            }
+            if (typeof obj.__private_key === 'undefined') {
+                obj.__private_key = next_private_key();
+            }
+            if (typeof owner.__privates[obj.__private_key] === 'undefined') {
+                owner.__privates[obj.__private_key] = {};
+            }
+                   
+            return owner.__privates[obj.__private_key];
+        }
+        return privates;
+    })();
+
 })();
