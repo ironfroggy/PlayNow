@@ -73,6 +73,6 @@ Scene.prototype.onstop = function(e) {
 };
 Scene.prototype.ontick = function(e, t) {
     for (var bi=0; bi < this.behaviors.length; bi++) {
-        this.behaviors[bi].tick(t);
+    //    this.behaviors[bi].tick(t);
     }
 };

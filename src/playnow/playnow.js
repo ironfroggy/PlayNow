@@ -13,6 +13,7 @@ var now;
         }
         script_dir = my_src.replace('playnow.js', '');
         pn_scripts = [
+            script_dir + "playnow.shims.js",
             script_dir + "playnow.inherit.js",
             script_dir + "playnow.vector.js",
             script_dir + "playnow.event.js",

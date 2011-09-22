@@ -1,6 +1,7 @@
-function Behavior(in_components) {
+function Behavior(in_components, rate) {
     this.in_components = (in_components || '').split(' ');
     this.entities = [];
+    this.rate = (typeof rate === 'undefined') ? 100 : rate;
 }
 Behavior.prototype = new Entity();
 Behavior.prototype.addEntity= function(entity) {
@@ -29,15 +30,42 @@ Behavior.prototype.addEntity= function(entity) {
 };
 Behavior.prototype.tick = function() {
 
+};
+Behavior.prototype.onstart = function(e) {
+    if (this.rate !== null) {
+        this.run();
+    }
+};
+Behavior.prototype.run = function() {
+    this.lts = new Date();
+    this.nts = null;
+    this.t = undefined;
+
+    this.running = true;
+    this.step();
+};
+Behavior.prototype.step = function step() {
+    if (this.running) {
+        this.nts = (new Date);
+        this.t = (this.nts.getTime() - this.lts.getTime()) / 1000;
+        this.tick(this.t);
+        this.lts = this.nts;
+
+        var behavior = this;
+        function do_step() {
+            behavior.step();
+        }
+        setTimeout(do_step, this.rate);
+    }
 }
 
 var Momentum = now.type('Momentum', {
     inherit: Behavior,
     init: function() {
-        Behavior.apply(this, ['position velocity']);
+        Behavior.apply(this, ['position velocity'], 50);
     },
     tick: function(t) {
-        var i, l, r, rv, v, entity;
+        var i, l, p, r, rv, v, entity;
         for (i=0, l=this.entities.length; i<l; i+=1) {  
             entity = this.entities[i];
             v = entity.get('velocity');
@@ -46,13 +74,12 @@ var Momentum = now.type('Momentum', {
 
             v[0] = Math.abs(v[0]) < 1 ? 0 : v[0];
             v[1] = Math.abs(v[1]) < 1 ? 0 : v[1];
-            entity._components['position'] = entity.get('position').add(v.multiply(t))
+            entity._components['position'] = p = entity.get('position').add(v.multiply(t))
 
             if (!!rv) {
                 entity._components['rotation'] = (r+rv)%Math.PI;
             }
             
-            var p = entity.get('position');
             entity._dirty = new R(p[0]-20, p[1]-20, 40, 40);
         }
     }
@@ -61,7 +88,7 @@ var Momentum = now.type('Momentum', {
 var Bounds = now.type('Bounds', {
     inherit: Behavior,
     init: function() {
-        Behavior.apply(this, ['position velocity']);
+        Behavior.apply(this, ['position velocity'], 200);
     },
     tick: function(t) {
         var i, l, r, rv, v, entity
@@ -100,7 +127,7 @@ var Force;
     Force = now.type('Force', {
         inherit: Behavior,
         init: function(G) {
-            Behavior.apply(this, ['weight velocity']);
+            Behavior.apply(this, ['weight velocity'], 200);
             this.G = G || new V(0, 9.8);
         },
         tick: function(t) {
