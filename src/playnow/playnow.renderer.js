@@ -68,7 +68,6 @@ Rendered.prototype.renderFrame = function() {
             position = entity._components['position']
         ,   color = entity._components['color']
         ,   image = entity._components['image']
-        ,   sprite_size = entity._components['sprite-size']
         ,   clip
         ,   scale = entity._components['scale'] || 1.0
         ,   alpha = entity._components['alpha']
@@ -88,10 +87,9 @@ Rendered.prototype.renderFrame = function() {
         ctx.scale(scale, scale);
 
         ctx.globalAlpha = alpha;
-        ctx.globalCompositeOperation = 'lighter';
 
         if (image) {
-            if (sprite_size) {
+            if (false) {
                 clip = [
                     parseInt(this.total_time * 10 % 4) * 30,
                     0,
