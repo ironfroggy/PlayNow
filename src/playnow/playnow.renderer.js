@@ -34,7 +34,6 @@ Rendered.prototype.renderFrame = function() {
     if (background_color && background_color.length === 3) {
         background_color.push(scene._components['clearEachFrameTranslucent'] || 0.3);
     }
-    ctx.fillStyle = colorStyle(background_color);
 
     scene.entities.sort(function(a, b) {
         return a._components.z - b._components.z;
@@ -45,6 +44,7 @@ Rendered.prototype.renderFrame = function() {
     ctx.translate(offset_x, offset_y);
 
     if (this._allDirty && background_color) {
+        ctx.fillStyle = colorStyle(background_color);
         ctx.fillRect(-100, -100, 840, 680);
     } else {
         for (var i=0,l=scene.entities.length; i<l; i++) {
@@ -85,7 +85,9 @@ Rendered.prototype.renderFrame = function() {
         ctx.translate(position[0], position[1]);
         ctx.rotate(entity._components['rotation'] || 0);
         ctx.scale(scale, scale);
+
         ctx.globalAlpha = alpha;
+        ctx.globalCompositeOperation = 'lighter';
 
         if (image) {
             if (sprite_size) {

@@ -80,13 +80,13 @@ var Bounds = now.type('Bounds', {
 
             if (p[1] > 480 || p[1] < 0) {
                 dy = p[1] > 480 ? p[1] - 480 : p[1];
-                v[0]=v.x = v[0]*FRICTION;
-                v[1]=v.y = -v[1]*ENERGY_LOSS;
+                v[0]=v.x = v[0]*f;
+                v[1]=v.y = -v[1]*e;
             }
             if (p[0] > 640 || p[0] < 0) {
                 dx = p[0] > 640 ? p[0] - 640 : p[0];
-                v[0]=v.x = -v[0]*ENERGY_LOSS;
-                v[1]=v.y = v[1]*FRICTION;
+                v[0]=v.x = -v[0]*e;
+                v[1]=v.y = v[1]*f;
             }
 
             p[0]=p.x = p[0] - dx;
