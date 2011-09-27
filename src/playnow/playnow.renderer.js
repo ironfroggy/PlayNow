@@ -17,6 +17,7 @@ Rendered.prototype.renderFrame = function() {
     // Before entities
     var viewport = this._components['viewport']
     ,   scene = viewport._components['scene']
+    ,   canvas = viewport._components['canvas']
     ,   ctx = viewport._components['ctx']
     ,   zoom = viewport._components['zoom']
     ,   offset_x = viewport._components['x']
@@ -121,9 +122,9 @@ Rendered.prototype.renderFrame = function() {
     ctx.restore();
 
     var renderer = this;
-    setTimeout(function() {
+    window.requestAnimFrame(function() {
         renderer.renderFrame();
-    }, now.renderRate);
+    }, canvas);
     this._allDirty = false;
 };
 
