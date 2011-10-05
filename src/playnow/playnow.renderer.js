@@ -44,8 +44,8 @@ Rendered.prototype.renderFrame = function() {
     ctx.scale(zoom, zoom);
     ctx.translate(offset_x, offset_y);
 
+    ctx.fillStyle = colorStyle(background_color);
     if (this._allDirty && background_color) {
-        ctx.fillStyle = colorStyle(background_color);
         ctx.fillRect(-100, -100, 840, 680);
     } else {
         for (var i=0,l=scene.entities.length; i<l; i++) {
