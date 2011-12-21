@@ -51,7 +51,7 @@ var Smiley = now.type('Smiley', {
     inherit: Entity,
     defaults: {
         dragging: false
-    ,   image: "/src/smiley.png"
+    ,   image: "../smiley.png"
     },
     'onmouse.wheel': function(e, pos, delta) {
     }
