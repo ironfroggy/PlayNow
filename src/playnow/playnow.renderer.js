@@ -45,7 +45,7 @@ Rendered.prototype.renderFrame = function() {
     ctx.translate(offset_x, offset_y);
 
     ctx.fillStyle = colorStyle(background_color);
-    if (this._allDirty && background_color) {
+    if (this._allDirty || background_color) {
         ctx.fillRect(-100, -100, 840, 680);
     } else {
         for (var i=0,l=scene.entities.length; i<l; i++) {
@@ -68,6 +68,7 @@ Rendered.prototype.renderFrame = function() {
             position = entity._components['position']
         ,   color = entity._components['color']
         ,   image = entity._components['image']
+        ,   anim = entity._components['animate']
         ,   clip
         ,   scale = entity._components['scale'] || 1.0
         ,   alpha = entity._components['alpha']
@@ -89,12 +90,26 @@ Rendered.prototype.renderFrame = function() {
         ctx.globalAlpha = alpha;
 
         if (image) {
-            if (false) {
+            if (anim) {
+                // anim[0] - frame width
+                // anim[1] - frame height
+                // anim[2] - frames per second
+
+                // number of frames in animation
+                var f = image.width / anim[0];
+                // seconds animation lasts
+                var s = f * anim[2];
+                // seconds into animation cycle
+                var r = this.total_time % s;
+                // current frame
+                var c = parseInt(r * anim[2]) % f;
+
+                var o = c * anim[0];
                 clip = [
-                    parseInt(this.total_time * 10 % 4) * 30,
+                    parseInt(o),
                     0,
-                    sprite_size[0],
-                    sprite_size[1],
+                    anim[0],
+                    anim[1],
                 ];
                 ctx.drawImage(
                     image,
@@ -165,6 +180,9 @@ Rendered.prototype.renderFrame = function() {
                         var canvas = document.createElement('canvas')
                         ,   ctx = canvas.getContext('2d')
                         ;
+
+                        canvas.setAttribute('width', this.width);
+                        canvas.setAttribute('height', this.height);
 
                         ctx.drawImage(this, 0, 0);
                         this.for_entity.set('image', canvas);

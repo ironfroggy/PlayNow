@@ -17,12 +17,17 @@
 
                     viewport = new ViewPort('c');
                     scene = new Scene();
+                    scene.set('clearEachFrame', [1, 1, 1, 1]);
 
-                    coin = new Entity();
-                    coin.set('position', new V(100, 100));
-                    coin.set('image', '../Coin_sprites.png');
+                    for (var i=0; i < 500; i++) {
+                        coin = new Entity();
+                        coin.set('position', new V(Math.random() * 500, Math.random() * 500));
+                        coin.set('image', '../Coin_sprites.png');
+                        coin.set('animate', [30, 30, 15 + Math.random() * 20]);
+                        coin.set('rotation', Math.PI * 0.5);
 
-                    scene.add(coin);
+                        scene.add(coin);
+                    }
 
                     viewport.set('scene', scene);
                 }
