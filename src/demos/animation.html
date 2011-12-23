@@ -19,12 +19,20 @@
                     scene = new Scene();
                     scene.set('clearEachFrame', [1, 1, 1, 1]);
 
-                    for (var i=0; i < 500; i++) {
+                    scene.add(new Momentum());
+                    scene.add(new Force(new V(0, 9.8)));
+                    scene.add(new Bounds());
+
+                    for (var i=0; i < 100; i++) {
                         coin = new Entity();
                         coin.set('position', new V(Math.random() * 500, Math.random() * 500));
                         coin.set('image', '../Coin_sprites.png');
-                        coin.set('animate', [30, 30, 15 + Math.random() * 20]);
-                        coin.set('rotation', Math.PI * 0.5);
+                        coin.set('animate', [30, 30, 20 + Math.random() * 10]);
+                        coin.set('rotation', Math.PI * Math.random());
+                        coin.set('scale', Math.random() + 1);
+
+                        coin.set('weight', 1);
+                        coin.set('velocity', new V(0, -10));
 
                         scene.add(coin);
                     }
