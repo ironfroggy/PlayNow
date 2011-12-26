@@ -3,7 +3,8 @@
         <title>DEMO</title>
     </head>
     <body>
-        <canvas id=c width=640 height=480 />
+        <canvas id=c width=640 height=480></canvas>
+        <h3><span id="fps">?</span> FPS</h3>
 
         <script type="text/javascript" src="../yepnope.1.0.2-min.js"></script>
         <script type="text/javascript" src="../playnow/playnow.js"></script>
@@ -25,17 +26,21 @@
 
                     for (var i=0; i < 1000; i++) {
                         coin = new Entity();
-                        coin.set('position', new V(Math.random() * 500, Math.random() * 500));
+                        coin.set('position', new V(Math.random() * 500, 450));
                         coin.set('image', '../Coin_sprites.png');
                         coin.set('animate', [30, 30, 20 + Math.random() * 10]);
                         coin.set('rotation', Math.PI * Math.random());
                         coin.set('scale', Math.random());
 
                         coin.set('weight', 1);
-                        coin.set('velocity', new V(0, -10));
+                        coin.set('velocity', new V(0, -50 - Math.random()*250));
 
                         scene.add(coin);
                     }
+
+                    viewport.get('renderer').bind('tick', function(e, t) {
+                        document.getElementById('fps').innerHTML = parseInt(1/t);
+                    });
 
                     viewport.set('scene', scene);
                 }

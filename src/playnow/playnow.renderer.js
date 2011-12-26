@@ -29,7 +29,7 @@ Rendered.prototype.renderFrame = function() {
     this.nts = (new Date);
     delta = (this.nts.getTime() - this.lts.getTime()) / 1000;
     this.total_time += delta;
-    this.trigger('tick', this.t);
+    this.trigger('tick', delta);
     this.lts = this.nts;
 
     if (background_color && background_color.length === 3) {
