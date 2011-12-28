@@ -176,37 +176,56 @@ Rendered.prototype.renderFrame = function() {
             image_src = entity.get('image', null);
             if (image_src !== null) {
                 if (typeof this._image[image_src] === 'undefined') {
-                    images_loading += 1;
-                    this._images[image_src] = new Image();
-                    this._images[image_src].src = image_src;
-                    this._images[image_src].for_entity = entity;
+
+                    if (!this._images[image_src]) {
+                        images_loading += 1;
+                        image = new Image();
+                        this._images[image_src] = image;
+                        image.src = image_src;
+                        image.entities = [];
+                        image.onload = function() {
+                            var canvas
+                            ,   ctx
+                            ,   entities_length = this.entities.length
+                            ;
+
+                            if (typeof this.ctx === 'undefined') {
+                                canvas = document.createElement('canvas');
+                                ctx = canvas.getContext('2d');
+
+                                canvas.setAttribute('width', this.width);
+                                canvas.setAttribute('height', this.height);
+
+                                ctx.drawImage(this, 0, 0);
+
+                                this.ctx = ctx;
+                                this.canvas = canvas;
+                            }
+
+                            for (i=0; i < entities_length; i++) {
+                                this.entities[i].set('image', this.canvas);
+                                this.entities[i].set('imagectx', this.ctx);
+
+                                this.entities[i].trigger('image-ready');
+                            }
+                            images_loading -= 1;
+                            checkLoadingDone.call(this);
+                        }
+                    } else {
+                        image = this._images[image_src];
+                    }
+                    image.entities.push(entity);
 
                     // Entity prep using the image data
 
-                    if (typeof entity.get('imagectx') === 'undefined') {
-                        this._images[image_src].onload = function() {
-                            var canvas = document.createElement('canvas')
-                            ,   ctx = canvas.getContext('2d')
-                            ;
+                    entity.bindonce('image-ready', function(e, renderer, entity) {
+                        this.for_entity = entity;
+                    }, [this, entity]);
 
-                            canvas.setAttribute('width', this.width);
-                            canvas.setAttribute('height', this.height);
-
-                            ctx.drawImage(this, 0, 0);
-                            this.for_entity.set('image', canvas);
-                            this.for_entity.set('imagectx', ctx);
-
-                            this.for_entity.trigger('image-ready');
-
-                            images_loading -= 1;
-                            checkLoadingDone.call(this);
-                        };
-                    }
                 }
             }
         }
         // Check if all the assets were already loaded before we got here
-        checkLoadingDone.call(this);
 
         // Local callbacks //
 
