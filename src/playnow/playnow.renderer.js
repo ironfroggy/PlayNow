@@ -126,7 +126,7 @@ Rendered.prototype.renderFrame = function() {
             }
         } else {
             ctx.fillStyle = colorStyle(color);
-            ctx.fillRect(-10/2, -10/2, 10, 10);
+            ctx.fillRect(-10/2, -10/2, entity.get('color-box').y, entity.get('color-box').x);
         }
 
         ctx.restore();
@@ -246,6 +246,8 @@ Rendered.prototype.renderFrame = function() {
                 self.trigger('ready');
             }
         }
+
+        checkLoadingDone();
     };
 })();
 
