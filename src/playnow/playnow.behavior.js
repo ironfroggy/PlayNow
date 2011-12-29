@@ -87,8 +87,9 @@ var Momentum = now.type('Momentum', {
 
 var Bounds = now.type('Bounds', {
     inherit: Behavior,
-    init: function() {
+    init: function(bound_rect) {
         Behavior.apply(this, ['position velocity'], 200);
+        this.bound_rect = bound_rect || new R(0, 0, 640, 480);
     },
     tick: function(t) {
         var i, l, r, rv, v, entity
@@ -103,15 +104,16 @@ var Bounds = now.type('Bounds', {
             ,   f = entity.get('friction', FRICTION)
             ,   dx = 0
             ,   dy = 0
+            ,   br = this.bound_rect
             ;
 
-            if (p[1] > 480 || p[1] < 0) {
-                dy = p[1] > 480 ? p[1] - 480 : p[1];
+            if (p[1] > br.h || p[1] < br.y) {
+                dy = p[1] > br.h ? p[1] - br.h : p[1];
                 v[0]=v.x = v[0]*f;
                 v[1]=v.y = -v[1]*e;
             }
-            if (p[0] > 640 || p[0] < 0) {
-                dx = p[0] > 640 ? p[0] - 640 : p[0];
+            if (p[0] > br.w || p[0] < br.x) {
+                dx = p[0] > br.w ? p[0] - br.w : p[0];
                 v[0]=v.x = -v[0]*e;
                 v[1]=v.y = v[1]*f;
             }
