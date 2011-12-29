@@ -95,10 +95,12 @@ Rendered.prototype.renderFrame = function() {
                 // anim[1] - frame height
                 // anim[2] - frames per second
 
+                var p = privates(this, entity);
+
                 // number of frames in animation
-                var f = image.width / anim[0];
+                var f = p.anim_frame_count;
                 // seconds animation lasts
-                var s = f * anim[2];
+                var s = p.anim_seconds;
                 // seconds into animation cycle
                 var r = this.total_time % s;
                 // current frame
@@ -218,9 +220,12 @@ Rendered.prototype.renderFrame = function() {
 
                     // Entity prep using the image data
 
-                    entity.bindonce('image-ready', function(e, renderer, entity) {
-                        this.for_entity = entity;
-                    }, [this, entity]);
+                    entity.bindonce('image-ready', function(e, renderer, image) {
+                        var p = privates(renderer, this);
+                        var anim = this.get('animate');
+                        p.anim_frame_count = image.width / anim[0];
+                        p.anim_seconds = p.anim_frame_count * anim[2];
+                    }, [this, image]);
 
                 }
             }
