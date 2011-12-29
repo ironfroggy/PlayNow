@@ -95,10 +95,12 @@ Rendered.prototype.renderFrame = function() {
                 // anim[1] - frame height
                 // anim[2] - frames per second
 
+                var p = privates(this, entity);
+
                 // number of frames in animation
-                var f = image.width / anim[0];
+                var f = p.anim_frame_count;
                 // seconds animation lasts
-                var s = f * anim[2];
+                var s = p.anim_seconds;
                 // seconds into animation cycle
                 var r = this.total_time % s;
                 // current frame
@@ -165,36 +167,79 @@ Rendered.prototype.renderFrame = function() {
         for (var i=0,l=scene.entities.length; i<l; i++) {
             entity = scene.entities[i];
 
+            // Setup dirty events
             entity.bind('setposition setrotation setalpha', mark_dirty);
+            // Entties with mousebounds are dirty to start, because they can move
             entity._dirty = entity.get('mousebounds');
+            // Provide a default ordering in z-layer
             entity.set('z', i);
 
+            // Load image assets
             image_src = entity.get('image', null);
             if (image_src !== null) {
                 if (typeof this._image[image_src] === 'undefined') {
-                    images_loading += 1;
-                    this._images[image_src] = new Image();
-                    this._images[image_src].src = image_src;
-                    this._images[image_src].for_entity = entity;
-                    this._images[image_src].onload = function() {
-                        var canvas = document.createElement('canvas')
-                        ,   ctx = canvas.getContext('2d')
-                        ;
 
-                        canvas.setAttribute('width', this.width);
-                        canvas.setAttribute('height', this.height);
+                    if (!this._images[image_src]) {
+                        images_loading += 1;
+                        image = new Image();
+                        this._images[image_src] = image;
+                        image.src = image_src;
+                        image.entities = [];
+                        image.onload = function() {
+                            var canvas
+                            ,   ctx
+                            ,   entities_length = this.entities.length
+                            ;
 
-                        ctx.drawImage(this, 0, 0);
-                        this.for_entity.set('image', canvas);
-                        this.for_entity.set('imagectx', ctx);
+                            if (typeof this.ctx === 'undefined') {
+                                canvas = document.createElement('canvas');
+                                ctx = canvas.getContext('2d');
 
-                        images_loading -= 1;
-                        checkLoadingDone.call(this);
-                    };
+                                canvas.setAttribute('width', this.width);
+                                canvas.setAttribute('height', this.height);
+
+                                ctx.drawImage(this, 0, 0);
+
+                                this.ctx = ctx;
+                                this.canvas = canvas;
+                            }
+
+                            for (i=0; i < entities_length; i++) {
+                                this.entities[i].set('image', this.canvas);
+                                this.entities[i].set('imagectx', this.ctx);
+
+                                this.entities[i].trigger('image-ready');
+                            }
+                            images_loading -= 1;
+                            checkLoadingDone.call(this);
+                        }
+                    } else {
+                        image = this._images[image_src];
+                    }
+                    image.entities.push(entity);
+
+                    // Entity prep using the image data
+
+                    entity.bindonce('image-ready', function(e, renderer, image) {
+                        var p = privates(renderer, this);
+                        var anim = this.get('animate');
+                        p.anim_frame_count = image.width / anim[0];
+                        p.anim_seconds = p.anim_frame_count * anim[2];
+                    }, [this, image]);
+
                 }
             }
         }
-        checkLoadingDone.call(this);
+        // Check if all the assets were already loaded before we got here
+
+        // Local callbacks //
+
+        function post_image_prep(renderer, entity) {
+            p = privates(renderer, entity);
+            anim = entity.get('animate');
+            p.anim_frame_count = image.width / anim[0];
+            p.anim_cycle_seconds = image.width / anim[0] * anim[2]
+        }
 
         function checkLoadingDone() {
             if (images_loading === 0) {
