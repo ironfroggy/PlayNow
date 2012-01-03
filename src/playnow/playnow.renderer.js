@@ -259,6 +259,6 @@ function colorStyle(color) {
         else
             return ['rgba(', parseInt(color[0]*255), ', ', parseInt(color[1]*255), ', ', parseInt(color[2]*255), ', ', color[3], ')'].join('');
     } catch (e) {
-        return 'grey';
+        return 'orange';
     }
 }
