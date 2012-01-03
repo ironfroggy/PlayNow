@@ -1,5 +1,15 @@
 var TicTacToe = {};
 (function(){
+    function setText(id, text) {
+        document.getElementById(id).innerHTML = text;
+    }
+    function getText(id) {
+        return document.getElementById(id).innerHTML;
+    }
+    function incrText(id) {
+        var i = parseInt(getText(id));
+        setText(id, i + 1);
+    }
 
     var COLORS = {
         'X': [1, 0, 0, 1],
@@ -17,14 +27,15 @@ var TicTacToe = {};
         'onmouse.click': function() {
             if (!this.get('state')) {
                 this.set('state', this.get('board').nextPlayer());
-            } else {
-                console.log('already', this.get('state'));
-            }
+            } 
         },
         'onsetstate': function(e, new_state) {
             if (COLORS[new_state]) {
                 this.set('color', COLORS[new_state]);
+            } else {
+                this.set('color', [1, 1, 1, 1]);
             }
+            this.get('board').checkForWin();
         },
         'onsetcolor': function(e, color) {
         },
@@ -39,20 +50,23 @@ var TicTacToe = {};
         mousemap = new MouseMap();
         this.add(mousemap);
 
-        this.set('clearEachFrame', [1, 1, 0.7, 1]);
+        this.set('clearEachFrame', [0.8, 0.8, 0.8, 1]);
 
         this.set('current-player', 'O');
 
+        this.squares = [];
+
         function add_square(scene, x, y) {
-            console.log('setting up square at', x, y);
             var s = new Square({
-                'position': new V(10 + x * 100, 10 + y * 100)
-            ,   'mousebounds': new R(10 + x * 100, 10 + y * 100, 100, 100)
-            ,   'color': [0.5, 0.5, 0.5, 1]
+                'position': new V(15 + x * 100, 15 + y * 100)
+            ,   'mousebounds': new R(15 + x * 100, 15 + y * 100, 100, 100)
+            ,   'color': [1, 1, 1, 1]
             ,   'color-box': new V(90, 90)
             ,   'board': scene
             });
             scene.add(s);
+
+            scene.squares.push(s)
         }
 
         add_square(this, 0, 0);
@@ -72,6 +86,57 @@ var TicTacToe = {};
         var n = this.get('current-player') === 'O' ? 'X' : 'O';
         this.set('current-player', n);
         return n;
+    };
+    GameScene.prototype['onsetcurrent-player'] = function(e, p) {
+        setText('turn', p);
+    };
+    GameScene.prototype.checkForWin = function() {
+        var m = [/111/, /1..1..1/, /1...1...1/, /..1.1.1../]
+        ,   win = null
+        ,   i
+        ,   scene = this
+        ;
+        if (this.checking) {
+            return;
+        } else {
+            this.checking = true;
+        }
+        if (this.squares.length === 9) {
+            var x = this._stateForPlayer('X');
+            var o = this._stateForPlayer('O');
+
+            for (i=0; i<m.length; i++) {
+                if (x.match(m[i])) {
+                    win = 'X';
+                    break;
+                }
+                if (o.match(m[i])) {
+                    win = 'O';
+                    break;
+                }
+            }
+
+            if (win) {
+                var squares = this.squares;
+                window.setTimeout(function() {
+                    incrText(win.toLowerCase());
+                    for (i=0; i<9; i++) {
+                        squares[i].set('state', '');
+                    }
+                    scene.checking = false;
+                }, 500);
+            }
+        }
+        if (!win) { 
+            this.checking = false;
+        }
+    };
+    GameScene.prototype._stateForPlayer = function(p) {
+        var states = [];
+        for (var i=0; i<9; i++) {
+            states[i] = this.squares[i].get('state') == p ? '1' : '0';
+        }
+        return states.join('');
     };
 
     // exports
