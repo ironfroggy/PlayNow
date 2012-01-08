@@ -119,22 +119,26 @@ var TicTacToe = {};
                     }
                 }
 
+                var squares = this.squares;
                 if (win) {
-                    var squares = this.squares;
+                    scene.set('active', false);
                     window.setTimeout(function() {
                         incrText(win.toLowerCase());
                         for (i=0; i<9; i++) {
                             squares[i].set('state', '');
                         }
                         scene.checking = false;
+                        scene.set('active', true);
                     }, 500);
                 } else {
                     if ((x.match(/1/g)||'').length + (o.match(/1/g)||'').length === 9) {
+                        scene.set('active', false);
                         window.setTimeout(function() {
                             for (i=0; i<9; i++) {
                                 squares[i].set('state', '');
                             }
                             scene.checking = false;
+                            scene.set('active', true);
                         }, 500);
                     }
                 }
