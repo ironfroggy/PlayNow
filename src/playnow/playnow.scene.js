@@ -1,4 +1,5 @@
 function Scene() {
+    Entity.apply(this);
     this.entities = [];
     this.behaviors = [];
     this.running = false;

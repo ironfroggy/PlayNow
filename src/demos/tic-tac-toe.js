@@ -25,8 +25,9 @@ var TicTacToe = {};
             state: null
         },
         'onmouse.click': function() {
-            if (!this.get('state')) {
-                this.set('state', this.get('board').nextPlayer());
+            var board = this.get('board');
+            if (!this.get('state') && board.get('active')) {
+                this.set('state', board.nextPlayer());
             } 
         },
         'onsetstate': function(e, new_state) {
@@ -46,14 +47,14 @@ var TicTacToe = {};
 
     GameScene = now.type('GameScene', {
         inherit: Scene,
+        defaults: {
+            'clearEachFrame': [0.8, 0.8, 0.8, 1],
+            'current-player': 'O',
+            'active': false,
+        },
         init: function () {
-            var mousemap;
-            mousemap = new MouseMap();
-            this.add(mousemap);
-
-            this.set('clearEachFrame', [0.8, 0.8, 0.8, 1]);
-
-            this.set('current-player', 'O');
+            Scene.apply(this);
+            this.add(new MouseMap());
 
             this.squares = [];
 
@@ -82,6 +83,7 @@ var TicTacToe = {};
             add_square(this, 2, 1);
             add_square(this, 2, 2);
 
+            this.set('active', true);
         },
         nextPlayer: function() {
             var n = this.get('current-player') === 'O' ? 'X' : 'O';
