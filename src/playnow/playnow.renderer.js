@@ -149,7 +149,9 @@ Rendered.prototype.renderFrame = function() {
         var entity, image, image_src
         ,   images_loading = 0
         ,   self = this
+        ,   scene_renderer_p = privates(this, scene)
         ;
+
         this._image = {};
 
         function mark_dirty(e, newpos, oldpos) {
@@ -233,13 +235,6 @@ Rendered.prototype.renderFrame = function() {
         // Check if all the assets were already loaded before we got here
 
         // Local callbacks //
-
-        function post_image_prep(renderer, entity) {
-            p = privates(renderer, entity);
-            anim = entity.get('animate');
-            p.anim_frame_count = image.width / anim[0];
-            p.anim_cycle_seconds = image.width / anim[0] * anim[2]
-        }
 
         function checkLoadingDone() {
             if (images_loading === 0) {

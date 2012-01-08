@@ -29,8 +29,6 @@ Scene.prototype._addEntityToBehaviors = function(entity) {
 };
 Scene.prototype.onsetasscene = function(e, object) {
     this.set('viewport', object);
-    var renderer = object.get('renderer');
-    renderer.prepareScene(this);
 };
 
 Scene.prototype.run = function() {
