@@ -44,109 +44,111 @@ var TicTacToe = {};
     // GameScene
     // Manages the board and current player, and tracks score
 
-    GameScene.prototype = new Scene();
-    function GameScene() {
-        var mousemap;
-        mousemap = new MouseMap();
-        this.add(mousemap);
+    GameScene = now.type('GameScene', {
+        inherit: Scene,
+        init: function () {
+            var mousemap;
+            mousemap = new MouseMap();
+            this.add(mousemap);
 
-        this.set('clearEachFrame', [0.8, 0.8, 0.8, 1]);
+            this.set('clearEachFrame', [0.8, 0.8, 0.8, 1]);
 
-        this.set('current-player', 'O');
+            this.set('current-player', 'O');
 
-        this.squares = [];
+            this.squares = [];
 
-        function add_square(scene, x, y) {
-            var s = new Square({
-                'position': new V(15 + x * 100, 15 + y * 100)
-            ,   'mousebounds': new R(15 + x * 100, 15 + y * 100, 100, 100)
-            ,   'color': [1, 1, 1, 1]
-            ,   'color-box': new V(90, 90)
-            ,   'board': scene
-            });
-            scene.add(s);
+            function add_square(scene, x, y) {
+                var s = new Square({
+                    'position': new V(15 + x * 100, 15 + y * 100)
+                ,   'mousebounds': new R(15 + x * 100, 15 + y * 100, 100, 100)
+                ,   'color': [1, 1, 1, 1]
+                ,   'color-box': new V(90, 90)
+                ,   'board': scene
+                });
+                scene.add(s);
 
-            scene.squares.push(s)
-        }
-
-        add_square(this, 0, 0);
-        add_square(this, 0, 1);
-        add_square(this, 0, 2);
-
-        add_square(this, 1, 0);
-        add_square(this, 1, 1);
-        add_square(this, 1, 2);
-
-        add_square(this, 2, 0);
-        add_square(this, 2, 1);
-        add_square(this, 2, 2);
-
-    };
-    GameScene.prototype.nextPlayer = function() {
-        var n = this.get('current-player') === 'O' ? 'X' : 'O';
-        this.set('current-player', n);
-        return n;
-    };
-    GameScene.prototype['onsetcurrent-player'] = function(e, p) {
-        setText('turn', p);
-    };
-    GameScene.prototype.checkForWin = function() {
-        var m = [/111/g, /1..1..1/g, /1...1...1/g, /..1.1.1../g]
-        ,   win = null
-        ,   i
-        ,   scene = this
-        ;
-        if (this.checking) {
-            return;
-        } else {
-            this.checking = true;
-        }
-        if (this.squares.length === 9) {
-            var x = this._stateForPlayer('X');
-            var o = this._stateForPlayer('O');
-
-            for (i=0; i<m.length; i++) {
-                if (x.match(m[i])) {
-                    win = 'X';
-                    break;
-                }
-                if (o.match(m[i])) {
-                    win = 'O';
-                    break;
-                }
+                scene.squares.push(s)
             }
 
-            if (win) {
-                var squares = this.squares;
-                window.setTimeout(function() {
-                    incrText(win.toLowerCase());
-                    for (i=0; i<9; i++) {
-                        squares[i].set('state', '');
-                    }
-                    scene.checking = false;
-                }, 500);
+            add_square(this, 0, 0);
+            add_square(this, 0, 1);
+            add_square(this, 0, 2);
+
+            add_square(this, 1, 0);
+            add_square(this, 1, 1);
+            add_square(this, 1, 2);
+
+            add_square(this, 2, 0);
+            add_square(this, 2, 1);
+            add_square(this, 2, 2);
+
+        },
+        nextPlayer: function() {
+            var n = this.get('current-player') === 'O' ? 'X' : 'O';
+            this.set('current-player', n);
+            return n;
+        },
+        'onsetcurrent-player': function(e, p) {
+            setText('turn', p);
+        },
+        checkForWin: function() {
+            var m = [/111/g, /1..1..1/g, /1...1...1/g, /..1.1.1../g]
+            ,   win = null
+            ,   i
+            ,   scene = this
+            ;
+            if (this.checking) {
+                return;
             } else {
-                if ((x.match(/1/g)||'').length + (o.match(/1/g)||'').length === 9) {
+                this.checking = true;
+            }
+            if (this.squares.length === 9) {
+                var x = this._stateForPlayer('X');
+                var o = this._stateForPlayer('O');
+
+                for (i=0; i<m.length; i++) {
+                    if (x.match(m[i])) {
+                        win = 'X';
+                        break;
+                    }
+                    if (o.match(m[i])) {
+                        win = 'O';
+                        break;
+                    }
+                }
+
+                if (win) {
+                    var squares = this.squares;
                     window.setTimeout(function() {
+                        incrText(win.toLowerCase());
                         for (i=0; i<9; i++) {
                             squares[i].set('state', '');
                         }
                         scene.checking = false;
                     }, 500);
+                } else {
+                    if ((x.match(/1/g)||'').length + (o.match(/1/g)||'').length === 9) {
+                        window.setTimeout(function() {
+                            for (i=0; i<9; i++) {
+                                squares[i].set('state', '');
+                            }
+                            scene.checking = false;
+                        }, 500);
+                    }
                 }
             }
+            if (!win) { 
+                this.checking = false;
+            }
+        },
+        _stateForPlayer: function(p) {
+            var states = [];
+            for (var i=0; i<9; i++) {
+                states[i] = this.squares[i].get('state') == p ? '1' : '0';
+            }
+            return states.join('');
         }
-        if (!win) { 
-            this.checking = false;
-        }
-    };
-    GameScene.prototype._stateForPlayer = function(p) {
-        var states = [];
-        for (var i=0; i<9; i++) {
-            states[i] = this.squares[i].get('state') == p ? '1' : '0';
-        }
-        return states.join('');
-    };
+    });
 
     // exports
     TicTacToe.GameScene = GameScene;
