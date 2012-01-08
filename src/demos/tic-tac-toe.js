@@ -91,7 +91,7 @@ var TicTacToe = {};
         setText('turn', p);
     };
     GameScene.prototype.checkForWin = function() {
-        var m = [/111/, /1..1..1/, /1...1...1/, /..1.1.1../]
+        var m = [/111/g, /1..1..1/g, /1...1...1/g, /..1.1.1../g]
         ,   win = null
         ,   i
         ,   scene = this
@@ -125,6 +125,15 @@ var TicTacToe = {};
                     }
                     scene.checking = false;
                 }, 500);
+            } else {
+                if ((x.match(/1/g)||'').length + (o.match(/1/g)||'').length === 9) {
+                    window.setTimeout(function() {
+                        for (i=0; i<9; i++) {
+                            squares[i].set('state', '');
+                        }
+                        scene.checking = false;
+                    }, 500);
+                }
             }
         }
         if (!win) { 
