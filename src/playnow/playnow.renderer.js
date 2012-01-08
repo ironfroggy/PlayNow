@@ -223,10 +223,12 @@ Rendered.prototype.renderFrame = function() {
                     // Entity prep using the image data
 
                     entity.bindonce('image-ready', function(e, renderer, image) {
-                        var p = privates(renderer, this);
                         var anim = this.get('animate');
-                        p.anim_frame_count = image.width / anim[0];
-                        p.anim_seconds = p.anim_frame_count * anim[2];
+                        if (!!anim) {
+                            var p = privates(renderer, this);
+                            p.anim_frame_count = image.width / anim[0];
+                            p.anim_seconds = p.anim_frame_count * anim[2];
+                        }
                     }, [this, image]);
 
                 }
