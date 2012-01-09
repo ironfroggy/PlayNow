@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+    <head>
+        <title>DEMO - Tic Tac Toe</title>
+    </head>
+    <body>
+        <canvas id=c width=310 height=310></canvas>
+        <ul>
+            <li>Turn: <span id=turn>?</span>
+            <li>X: <span id=x>0</span>
+            <li>O: <span id=o>0</span>
+        </ul>
+
+        <script type="text/javascript" src="../yepnope.1.0.2-min.js"></script>
+        <script type="text/javascript" src="../playnow/playnow.js"></script>
+        <script type="text/javascript">
+            var viewport, scene;
+
+            now.load(
+                ['tic-tac-toe.js']
+            ,   function(){
+                    viewport = new ViewPort('c');
+                    scene = new TicTacToe.GameScene();
+                    viewport.set('scene', scene);
+                }
+            );
+        </script>
+    </body>
+</html>

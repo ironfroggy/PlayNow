@@ -126,7 +126,7 @@ Rendered.prototype.renderFrame = function() {
             }
         } else {
             ctx.fillStyle = colorStyle(color);
-            ctx.fillRect(-10/2, -10/2, 10, 10);
+            ctx.fillRect(-10/2, -10/2, entity.get('color-box').y, entity.get('color-box').x);
         }
 
         ctx.restore();
@@ -149,7 +149,9 @@ Rendered.prototype.renderFrame = function() {
         var entity, image, image_src
         ,   images_loading = 0
         ,   self = this
+        ,   scene_renderer_p = privates(this, scene)
         ;
+
         this._image = {};
 
         function mark_dirty(e, newpos, oldpos) {
@@ -221,10 +223,12 @@ Rendered.prototype.renderFrame = function() {
                     // Entity prep using the image data
 
                     entity.bindonce('image-ready', function(e, renderer, image) {
-                        var p = privates(renderer, this);
                         var anim = this.get('animate');
-                        p.anim_frame_count = image.width / anim[0];
-                        p.anim_seconds = p.anim_frame_count * anim[2];
+                        if (!!anim) {
+                            var p = privates(renderer, this);
+                            p.anim_frame_count = image.width / anim[0];
+                            p.anim_seconds = p.anim_frame_count * anim[2];
+                        }
                     }, [this, image]);
 
                 }
@@ -234,18 +238,13 @@ Rendered.prototype.renderFrame = function() {
 
         // Local callbacks //
 
-        function post_image_prep(renderer, entity) {
-            p = privates(renderer, entity);
-            anim = entity.get('animate');
-            p.anim_frame_count = image.width / anim[0];
-            p.anim_cycle_seconds = image.width / anim[0] * anim[2]
-        }
-
         function checkLoadingDone() {
             if (images_loading === 0) {
                 self.trigger('ready');
             }
         }
+
+        checkLoadingDone();
     };
 })();
 
@@ -257,6 +256,6 @@ function colorStyle(color) {
         else
             return ['rgba(', parseInt(color[0]*255), ', ', parseInt(color[1]*255), ', ', parseInt(color[2]*255), ', ', color[3], ')'].join('');
     } catch (e) {
-        return 'grey';
+        return 'orange';
     }
 }
