@@ -18,6 +18,10 @@ Entity.prototype.set = function(name, data) {
     if (this.trigger('set'+name, data, previous_value) === false) {
         this._components[name] = previous_value;
     }
+    if (previous_value instanceof EventHandling) {
+        previous_value.trigger('unsetas', this, name, data);
+        previous_value.trigger('unsetas' + name, this, data);
+    }
     if (data instanceof EventHandling) {
         data.trigger('setas', this, name);
         data.trigger('setas' + name, this);

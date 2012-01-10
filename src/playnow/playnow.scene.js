@@ -1,5 +1,5 @@
 function Scene() {
-    Entity.apply(this);
+    Entity.apply(this, arguments);
     this.entities = [];
     this.behaviors = [];
     this.running = false;
@@ -30,6 +30,9 @@ Scene.prototype._addEntityToBehaviors = function(entity) {
 };
 Scene.prototype.onsetasscene = function(e, object) {
     this.set('viewport', object);
+};
+Scene.prototype.onunsetasscene = function(e, object, new_scene) {
+    this.stop();
 };
 
 Scene.prototype.run = function() {
