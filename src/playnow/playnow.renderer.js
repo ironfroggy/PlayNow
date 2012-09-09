@@ -26,8 +26,10 @@ Rendered.prototype.renderFrame = function() {
     ,   delta
     ;
 
-    this.nts = (new Date);
-    delta = (this.nts.getTime() - this.lts.getTime()) / 1000;
+    //this.nts = (new Date);
+    //delta = (this.nts.getTime() - this.lts.getTime()) / 1000;
+    delta = 1000;
+    this.nts = this.lts + delta;
     this.total_time += delta;
     this.trigger('tick', delta);
     this.lts = this.nts;
@@ -36,9 +38,9 @@ Rendered.prototype.renderFrame = function() {
         background_color.push(scene._components['clearEachFrameTranslucent'] || 0.3);
     }
 
-    scene.entities.sort(function(a, b) {
-        return a._components.z - b._components.z;
-    });
+    //scene.entities.sort(function(a, b) {
+    //    return a._components.z - b._components.z;
+    //});
 
     ctx.save();
     ctx.scale(zoom, zoom);
@@ -47,35 +49,23 @@ Rendered.prototype.renderFrame = function() {
     ctx.fillStyle = colorStyle(background_color);
     if (this._allDirty || background_color) {
         ctx.fillRect(-100, -100, 840, 680);
-    } else {
-        for (var i=0,l=scene.entities.length; i<l; i++) {
-            var entity = scene.entities[i];
-            var d = entity._dirty;
-            if (d) {
-                ctx.fillRect(d[0], d[1], d[2], d[3]);
-            }
-        }
-    }
+    } 
 
     // Entities
     for (var i=0,l=scene.entities.length; i<l; i++) {
         var entity = scene.entities[i];
-        if (!entity._dirty && !this._allDirty) {
-            //continue
-        }
 
         var
-            position = entity._components['position']
-        ,   color = entity._components['color']
-        ,   image = entity._components['image']
-        ,   anim = entity._components['animate']
+            entity_components = entity._components
+        ,   position = entity_components['position']
+        ,   color = entity_components['color']
+        ,   image = entity_components['image']
+        ,   anim = entity_components['animate']
         ,   clip
-        ,   scale = entity._components['scale'] || 1.0
-        ,   alpha = entity._components['alpha']
+        ,   scale = entity_components['scale'] || 1.0
+        ,   alpha = entity_components['alpha']
         ,   alpha = typeof alpha === 'undefined' ? 1.0 : alpha
         ;
-
-        entity._dirty = false;
 
         if (typeof position === 'undefined') {
             continue;
@@ -84,7 +74,7 @@ Rendered.prototype.renderFrame = function() {
         ctx.save();
 
         ctx.translate(position[0], position[1]);
-        ctx.rotate(entity._components['rotation'] || 0);
+        ctx.rotate(entity_components['rotation'] || 0);
         ctx.scale(scale, scale);
 
         ctx.globalAlpha = alpha;
@@ -107,16 +97,16 @@ Rendered.prototype.renderFrame = function() {
                 var c = parseInt(r * anim[2]) % f;
 
                 var o = c * anim[0];
-                clip = [
+                ctx.drawImage(
+                    image,
                     parseInt(o),
                     0,
                     anim[0],
                     anim[1],
-                ];
-                ctx.drawImage(
-                    image,
-                    clip[0], clip[1], clip[2], clip[3],
-                    0, 0, clip[2], clip[3]
+                    0,
+                    0,
+                    anim[0],
+                    anim[1]
                 );
             } else {
                 ctx.drawImage(
@@ -154,25 +144,9 @@ Rendered.prototype.renderFrame = function() {
 
         this._image = {};
 
-        function mark_dirty(e, newpos, oldpos) {
-            if (this._dirty === false) {
-                this._dirty = new R(oldpos[0], oldpos[1], this._components.mousebounds.w, this._components.mousebounds.h);
-                var i, es=scene.entities, l=scene.entities.length, r=this._components['mousebounds'];
-                for (i=0; i<l; i++) {
-                    if (es[i] !== this && es[i]._components['mousebounds'].intersects(r)) {
-                        mark_dirty.call(es[i], e, es[i]._components.position, es[i]._components.position);
-                    }
-                }
-            }
-        }
-
         for (var i=0,l=scene.entities.length; i<l; i++) {
             entity = scene.entities[i];
 
-            // Setup dirty events
-            entity.bind('setposition setrotation setalpha', mark_dirty);
-            // Entties with mousebounds are dirty to start, because they can move
-            entity._dirty = entity.get('mousebounds');
             // Provide a default ordering in z-layer
             entity.set('z', i);
 

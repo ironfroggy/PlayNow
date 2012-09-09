@@ -75,14 +75,14 @@ var Momentum = now.type('Momentum', {
             v[0] = Math.abs(v[0]) < 1 ? 0 : v[0];
             v[1] = Math.abs(v[1]) < 1 ? 0 : v[1];
             p = entity.get('position');
-            p.iadd(v.multiply(t));
+            //p.iadd(v.multiply(t));
+            p[0] = p[0] + v[0] * t;
+            p[1] = p[1] + v[1] * t;
             entity._components['position'] = p;
 
             if (!!rv) {
                 entity._components['rotation'] = (r+rv)%Math.PI;
             }
-            
-            entity._dirty = new R(p[0]-20, p[1]-20, 40, 40);
         }
     }
 });
