@@ -5,11 +5,19 @@ function V(x, y) {
     this.y = y;
 }
 V.prototype = new Array();
-V.prototype.add = function(b) {
+V.prototype.add = function add(b) {
     return new V(this[0] + b[0], this[1] + b[1]);
 };
-V.prototype.subtract = function(b) {
+V.prototype.iadd = function iadd(b) {
+    this[0] += b[0];
+    this[1] += b[1];
+};
+V.prototype.subtract = function subtract(b) {
     return new V(this[0] - b[0], this[1] - b[1]);
+};
+V.prototype.isubtract = function isubtract(b) {
+    this[0] -= b[0];
+    this[1] -= b[1];
 };
 V.prototype.getLength = function() {
     var length_sqr = this[0]*this[0] + this[1]*this[1] // + this[2]*this[2]
@@ -18,15 +26,25 @@ V.prototype.getLength = function() {
 
     return length;
 };
-V.prototype.normal = function() {
+V.prototype.normal = function normal() {
     var n = 1 / this.getLength();
 
     return new V(this[0] * n, this[1] * n, this[2] * n);
 };
-V.prototype.multiply = function(n) {
+V.prototype.inormal = function inormal() {
+    var n = 1 /this.getLength();
+    this[0] = this[0] * n;
+    this[1] = this[1] * n;
+    this[2] = this[2] * n;
+};
+V.prototype.multiply = function multiply(n) {
     return new V(this[0] * n, this[1] * n, this[2] * n);
 };
-
+V.prototype.imultiple = function imultiple(n) {
+    this[0] = this[0] * n;
+    this[1] = this[1] * n;
+    this[2] = this[2] * n;
+};
 
 function R(x, y, w, h) {
     V.call(this, x, y);

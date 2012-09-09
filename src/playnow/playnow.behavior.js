@@ -74,7 +74,9 @@ var Momentum = now.type('Momentum', {
 
             v[0] = Math.abs(v[0]) < 1 ? 0 : v[0];
             v[1] = Math.abs(v[1]) < 1 ? 0 : v[1];
-            entity._components['position'] = p = entity.get('position').add(v.multiply(t))
+            p = entity.get('position');
+            p.iadd(v.multiply(t));
+            entity._components['position'] = p;
 
             if (!!rv) {
                 entity._components['rotation'] = (r+rv)%Math.PI;
@@ -136,7 +138,7 @@ var Force;
             var i, l, entity;
             for (i=0, l=this.entities.length; i<l; i+=1) {  
                 entity = this.entities[i];
-                entity._components['velocity'] = entity._components['velocity'].add(this.G);
+                entity._components['velocity'].iadd(this.G);
             }
         }
     });
