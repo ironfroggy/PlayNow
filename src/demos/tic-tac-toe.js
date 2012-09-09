@@ -30,16 +30,18 @@ var TicTacToe = {};
                 this.set('state', board.nextPlayer());
             } 
         },
-        'onsetstate': function(e, new_state) {
+    });
+
+    SquareBehavior = now.type('SquareBehavior', {
+        inherit: Behavior,
+        'onentity.setstate': function(e, square, new_state) {
             if (COLORS[new_state]) {
-                this.set('color', COLORS[new_state]);
+                square.set('color', COLORS[new_state]);
             } else {
-                this.set('color', [1, 1, 1, 1]);
+                square.set('color', [1, 1, 1, 1]);
             }
-            this.get('board').checkForWin();
-        },
-        'onsetcolor': function(e, color) {
-        },
+            square.get('board').checkForWin();
+        }
     });
 
     // GameScene
@@ -58,6 +60,8 @@ var TicTacToe = {};
 
             this.squares = [];
 
+            square_behavior = new SquareBehavior();
+
             function add_square(scene, x, y) {
                 var s = new Square({
                     'position': new V(15 + x * 100, 15 + y * 100)
@@ -69,6 +73,7 @@ var TicTacToe = {};
                 scene.add(s);
 
                 scene.squares.push(s)
+                square_behavior.addEntity(s);
             }
 
             add_square(this, 0, 0);
