@@ -3,13 +3,13 @@
         <title>DEMO</title>
     </head>
     <body>
-        <canvas id=c width=320 height=240 />
+        <canvas id=c width=640 height=480 />
 
         <script type="text/javascript" src="../yepnope.1.0.2-min.js"></script>
         <script type="text/javascript" src="../playnow/playnow.js"></script>
         <script type="text/javascript">
             now.load([], function(){
-                function BouncingBallScene(R, D) {
+                function BouncingBallScene(R, D, M) {
                     var dot, color;
 
                     this.add(new Momentum());
@@ -22,19 +22,19 @@
                             var b = 0.5 + Math.random() * 0.5;
                             color = [b, b, 1.0, 0.5]
                             dot = new Entity({
-                                'position': new V(x, y)
-                            ,   'velocity': new V(Math.random()*R-R/2, Math.random()*R-v)
+                                'position': new V(x, y - (Math.random() * 10))
+                            ,   'velocity': new V(50 + (Math.random()*R-R/2), Math.random()*R-v)
                             ,   'weight': 0.0
                             ,   'bounce': Math.random()*0.5 + 0.05
                             ,   'rotation': Math.random() * Math.PI / 100
                             ,   'rotation-velocity': Math.random() * Math.PI - Math.PI/2 / 100
                             ,   'color': color 
                             ,   'color-box': new V(10, 10)
-                            ,   'scale': 0.1 + Math.random()
+                            ,   'scale': 0.3 + (Math.random() * 0.4)
                             });
                             (function(scene, dot){
                                 setTimeout(function(){
-                                    if (scene.entities.length > D*30) {
+                                    if (scene.entities.length > M) {
                                         scene.entities.splice(0, 1);
                                     }
                                     scene.add(dot);
@@ -45,19 +45,19 @@
                     setInterval(
                         (function(scene){
                             return function() {
-                                spawn.call(scene, 200/2, 480/2, 120);
-                                spawn.call(scene, 320/2, 480/2, 170);
-                                spawn.call(scene, 420/2, 480/2, 120);
+                                //spawn.call(scene, 200, 480, 120);
+                                spawn.call(scene, 200, 480, 170);
+                                //spawn.call(scene, 420, 480, 120);
                             }
                         })(this) 
-                    , 1000);
+                    , 100);
 
                     this.set('clearEachFrame', [1, 1, 1, 1]);
                 }
                 BouncingBallScene.prototype = new Scene();
 
                 var viewport = new ViewPort('c');
-                var scene = new BouncingBallScene(20, 50);
+                var scene = new BouncingBallScene(20, 5, 300);
                 viewport.set('scene', scene);
             });
         </script>
