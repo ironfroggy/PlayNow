@@ -1,0 +1,35 @@
+<html>
+    <head>
+        <title>DEMO</title>
+    </head>
+    <body>
+        <canvas id=c width=640 height=480></canvas>
+
+        <script type="text/javascript" src="../../yepnope.1.0.2-min.js"></script>
+        <script type="text/javascript" src="../../playnow/playnow.js"></script>
+        <script type="text/javascript">
+            var viewport, scene;
+            now.load(
+                ['astro-blaster.js']
+            ,   function(){
+                    viewport = new ViewPort('c');
+                    scene = new Scene();
+                    scene.set('clearEachFrame', [1, 1, 1, 1]);
+
+                    scene.add(new Momentum());
+                    scene.add(new Bounds());
+
+                    ship = new AB.Ship({
+                        'position': new V(320, 240),
+                        //'animate': [30, 30, 20 + Math.random() * 10],
+                        'rotation': Math.PI * Math.random(),
+                    });
+
+                    scene.add(ship);
+
+                    viewport.set('scene', scene);
+                }
+            );
+        </script>
+    </body>
+</html>

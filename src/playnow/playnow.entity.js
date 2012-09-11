@@ -49,8 +49,10 @@ Entity.prototype.getComponentNames = function() {
 Entity.prototype.propagate = function(eventname, component, before) {
     this.bind(eventname, function() {
         var c = this.get(component);
-        before = (before||function(){return arguments});
-        c.trigger.apply(c, before.apply(this, arguments));
+        if (!!c) {
+            before = (before||function(){return arguments});
+            c.trigger.apply(c, before.apply(this, arguments));
+        }
     });
 };
 

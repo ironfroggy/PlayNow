@@ -20,6 +20,8 @@ function ViewPort(canvas_id) {
         }
         return arguments;
     });
+    
+    this.propagate('key', 'scene');
 
     var viewport = this
     ,   canvas = this.get('canvas')
@@ -44,6 +46,19 @@ function ViewPort(canvas_id) {
         ,   e.clientY/zoom + offset_y
         )
     }
+
+    if (typeof window.nowplayviewports === "undefined") {
+        window.nowplayviewports = [];
+        window.onkeyup = window.onkeypress = window.onkeydown = function(e) {
+            var t = e.type.split("key");
+            t[0] = 'key';
+            t = t.join('.');
+            for (var i = 0; i < window.nowplayviewports.length; i++) {
+                window.nowplayviewports[i].trigger(t, e.keyCode);
+            }
+        };
+    }
+    window.nowplayviewports.push(this);
 
     var fromcoord, isdown;
     for (var mevent in mevents) {
@@ -78,6 +93,7 @@ function ViewPort(canvas_id) {
                     // ???
                 }
             } else {
+                console.log('setting up canvas event', mevent);
                 this.get('canvas')['on' + mevent] = function(e) {
                     if (mevent === 'mousedown') {
                         isdown = true;
@@ -86,6 +102,7 @@ function ViewPort(canvas_id) {
                     }
                     viewport.trigger(mevents[mevent], adjusted_coords(e));
                 }
+                console.log(this.get('canvas')['on' + mevent]);
             }
         }).call(this, mevent);
     }
