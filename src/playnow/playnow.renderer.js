@@ -65,6 +65,7 @@ Rendered.prototype.renderFrame = function() {
         ,   scale = entity_components['scale'] || 1.0
         ,   alpha = entity_components['alpha']
         ,   alpha = typeof alpha === 'undefined' ? 1.0 : alpha
+        ,   center = entity_components['center']
         ;
 
         if (typeof position === 'undefined') {
@@ -75,6 +76,9 @@ Rendered.prototype.renderFrame = function() {
 
         ctx.translate(position[0], position[1]);
         ctx.rotate(entity_components['rotation'] || 0);
+        if (!!center) {
+            ctx.translate(center[0] * -scale, center[1] * -scale);
+        }
         ctx.scale(scale, scale);
 
         ctx.globalAlpha = alpha;

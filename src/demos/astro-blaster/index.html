@@ -9,21 +9,39 @@
         <script type="text/javascript" src="../../playnow/playnow.js"></script>
         <script type="text/javascript">
             var viewport, scene;
+            var spawner;
+            function fire(ship) {
+                var bullet = spawner.spawn({
+                    position: ship.get('position').add(new V(0, 0))
+                ,   velocity: new V(0, 50).rotate(ship.get('rotation'))
+                ,   color: [0.5+Math.random()*0.5, 0.5+Math.random()*0.5, 0.5+Math.random()*0.5, 0.5]
+                }, true);
+            }
             now.load(
                 ['astro-blaster.js']
             ,   function(){
                     viewport = new ViewPort('c');
-                    scene = new Scene();
-                    scene.set('clearEachFrame', [1, 1, 1, 1]);
-
-                    scene.add(new Momentum());
-                    scene.add(new Bounds());
+                    scene = new AB.AstroBlasterGame();
 
                     ship = new AB.Ship({
                         'position': new V(320, 240),
                         //'animate': [30, 30, 20 + Math.random() * 10],
                         'rotation': Math.PI * Math.random(),
                     });
+                    var firing_i;
+                    ship.bind('setfiring', function(e, firing){
+                        if (!firing_i) firing_i = null;
+                        console.log('firing', firing, firing_i);
+                        if (firing && firing_i === null) {
+                            fire(ship);
+                            firing_i = setInterval(function(){fire(ship);}, 250);
+                        } else if (!firing) {
+                            clearInterval(firing_i);
+                            firing_i = null;
+                        }
+                    });
+
+                    spawner = new AB.Spawner(scene, 10, AB.Bullet, []);
 
                     scene.add(ship);
 

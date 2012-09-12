@@ -5,6 +5,9 @@ function V(x, y) {
     this.y = y;
 }
 V.prototype = new Array();
+V.prototype.toString = function() {
+    return ['(', this[0], ', ', this[1], ')'].join('');
+}
 V.prototype.add = function add(b) {
     return new V(this[0] + b[0], this[1] + b[1]);
 };
@@ -36,6 +39,17 @@ V.prototype.inormal = function inormal() {
     this[0] = this[0] * n;
     this[1] = this[1] * n;
     this[2] = this[2] * n;
+};
+V.prototype.rotate = function rotate(degree) {
+    var x = (this.x * Math.cos(-degree)) - (this.y * Math.sin(-degree));
+    var y = (this.x * Math.sin(-degree)) - (this.y * Math.cos(-degree));
+    return new V(x, y);
+};
+V.prototype.irotate = function irotate(degree) {
+    var x = (this.x * Math.cos(-degree)) - (this.y * Math.sin(-degree));
+    var y = (this.x * Math.sin(-degree)) - (this.y * Math.cos(-degree));
+    this[0] = x;
+    this[0] = y;
 };
 V.prototype.multiply = function multiply(n) {
     return new V(this[0] * n, this[1] * n, this[2] * n);

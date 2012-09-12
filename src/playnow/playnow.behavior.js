@@ -81,7 +81,7 @@ var Momentum = now.type('Momentum', {
             entity._components['position'] = p;
 
             if (!!rv) {
-                entity._components['rotation'] = (r+rv)%Math.PI;
+                entity._components['rotation'] = (r+rv);//%Math.PI;
             }
         }
     }
@@ -89,7 +89,8 @@ var Momentum = now.type('Momentum', {
 
 var Bounds = now.type('Bounds', {
     inherit: Behavior,
-    init: function(bound_rect) {
+    init: function(bound_rect, options) {
+        this.options = options || {};
         Behavior.apply(this, ['position velocity'], 200);
         this.bound_rect = bound_rect || new R(0, 0, 640, 480);
     },
@@ -97,6 +98,7 @@ var Bounds = now.type('Bounds', {
         var i, l, r, rv, v, entity
         ,   ENERGY_LOSS = 0.75
         ,   FRICTION = 0.95
+        ,   wrap = this.options.wrap
         ;
         for (i=0, l=this.entities.length; i<l; i+=1) {  
             entity = this.entities[i];
@@ -110,18 +112,28 @@ var Bounds = now.type('Bounds', {
             ;
 
             if (p[1] > br.h || p[1] < br.y) {
-                dy = p[1] > br.h ? p[1] - br.h : p[1];
-                v[0]=v.x = v[0]*f;
-                v[1]=v.y = -v[1]*e;
+                if (wrap) {
+                    p[1]=p.y = p[1] < br.y ? br.h : 0;
+                } else {
+                    dy = p[1] > br.h ? p[1] - br.h : p[1];
+                    v[0]=v.x = v[0]*f;
+                    v[1]=v.y = -v[1]*e;
+                }
             }
             if (p[0] > br.w || p[0] < br.x) {
-                dx = p[0] > br.w ? p[0] - br.w : p[0];
-                v[0]=v.x = -v[0]*e;
-                v[1]=v.y = v[1]*f;
+                if (wrap) {
+                    p[0]=p.x = p[0] < br.x ? br.w : 0;
+                } else {
+                    dx = p[0] > br.w ? p[0] - br.w : p[0];
+                    v[0]=v.x = -v[0]*e;
+                    v[1]=v.y = v[1]*f;
+                }
             }
 
-            p[0]=p.x = p[0] - dx;
-            p[1]=p.y = p[1] - dy;
+            if (!wrap) {
+                p[0]=p.x = p[0] - dx;
+                p[1]=p.y = p[1] - dy;
+            }
         }
     }
 });
