@@ -55,6 +55,10 @@ Rendered.prototype.renderFrame = function() {
     for (var i=0,l=scene.entities.length; i<l; i++) {
         var entity = scene.entities[i];
 
+        if (!entity.active) {
+            continue;
+        }
+
         var
             entity_components = entity._components
         ,   position = entity_components['position']

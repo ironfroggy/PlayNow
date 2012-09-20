@@ -1,6 +1,7 @@
 function Entity(data) {
     this._components = {};
     this._propagation = {};
+    this.active = true;
     
     this.update(data);
     if (typeof this.defaults === 'object') {
