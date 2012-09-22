@@ -16,14 +16,14 @@
                     this.add(new Force(new V(0, 9.8)));
                     this.add(new Bounds());
 
-                    function spawn(x, y, v) {
+                    function spawn(x, y, vx, vy) {
                         for (var i=0; i<D; i++) {
                             // color = [Math.random(), Math.random(), Math.random(), Math.random() / 1.5];
                             var b = 0.5 + Math.random() * 0.5;
                             color = [b, b, 1.0, 0.5]
                             dot = new Entity({
                                 'position': new V(x, y - (Math.random() * 10))
-                            ,   'velocity': new V(50 + (Math.random()*R-R/2), Math.random()*R-v)
+                            ,   'velocity': new V(vx + (R/2-Math.random()*R), vy + (R/2-Math.random()*R))
                             ,   'weight': 0.0
                             ,   'bounce': Math.random()*0.5 + 0.05
                             ,   'rotation': Math.random() * Math.PI / 100
@@ -45,20 +45,28 @@
                     setInterval(
                         (function(scene){
                             return function() {
-                                //spawn.call(scene, 200, 480, 120);
-                                spawn.call(scene, 200, 480, 170);
-                                //spawn.call(scene, 420, 480, 120);
+                                spawn.call(scene, 300, 480, -50, -200*X);
+                                spawn.call(scene, 320, 480, 0, -300*X);
+                                spawn.call(scene, 340, 480, 50, -200*X);
                             }
                         })(this) 
                     , 100);
 
-                    this.set('clearEachFrame', [1, 1, 1, 1]);
+                    this.set('clearEachFrame', [0, 0, 0, 1]);
                 }
                 BouncingBallScene.prototype = new Scene();
 
                 var viewport = new ViewPort('c');
-                var scene = new BouncingBallScene(20, 5, 300);
+                var scene = new BouncingBallScene(20, 5, 1000);
                 viewport.set('scene', scene);
+
+                var X = 0.75;
+                viewport['onkey.down'] = function() {
+                    X = 2;
+                }
+                viewport['onkey.up'] = function() {
+                    X = 0.5;
+                }
             });
         </script>
     </body>
